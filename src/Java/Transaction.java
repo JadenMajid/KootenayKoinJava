@@ -30,4 +30,13 @@ public class Transaction {
         return " " + amount + " " + addressFrom + " " + addressTo;
     }
 
+    public boolean validate(KootenayKoinBlockchain blockchain) throws InvalidTransactionException{
+        if (addressFrom == -1){
+            return true; // this is just a temporary fix to allow for accounts to have balance added without validation
+        }
+        if (KootenayKoinBlockchain.calculateBalance(addressTo, blockchain) < amount){
+            throw new InvalidTransactionException(this.toString());
+        }
+        return true;
+    }
 }

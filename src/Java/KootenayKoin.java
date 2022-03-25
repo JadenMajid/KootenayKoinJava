@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 
 class KootenayKoin {
     static int transactionsPerKoin = 8;
+    static double miningReward = 10;
 
     int blockNumber = 0;
     int difficulty = 1;
@@ -78,9 +79,10 @@ class KootenayKoin {
     }
 
     // Validation method to validate this block as valid, can also be accessed with a String for prev hash
-    public boolean validate() throws InvalidKootenayKoinException {
+    public boolean validate() throws InvalidKootenayKoinException, InvalidTransactionException {
         String value = this.hash();
-        if (!value.substring(0, this.difficulty).equals("0".repeat( this.difficulty))){
+        if (!value.substring(0, this.difficulty).equals("0".repeat(this.difficulty))){
+            System.out.println("Invalid Block:\n" + this.toString());
             throw new InvalidKootenayKoinException("Invalid Block",
                     new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
         }
@@ -88,13 +90,22 @@ class KootenayKoin {
         return true;
     }
 
-    public boolean validate(String previousHash) throws InvalidKootenayKoinException {
+    public boolean validate(String previousHash, KootenayKoinBlockchain blockchain) throws InvalidKootenayKoinException {
         String value = this.hash();
         if (value.substring(0, this.difficulty).equals("0".repeat( this.difficulty)) &&
                 this.previousHash == previousHash){
             throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
         }
 
+        return true;
+    }
+
+    public boolean validate(String previousHash) throws InvalidKootenayKoinException{
+        String value = this.hash();
+        if (value.substring(0, this.difficulty).equals("0".repeat( this.difficulty)) &&
+                this.previousHash == previousHash){
+            throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
+        }
         return true;
     }
 }

@@ -1,7 +1,7 @@
 package Java;
 
 public class Miner extends Account{
-    public int DIFFICULTY = 3;
+    public static int DIFFICULTY = 5;
     private KootenayKoin coin; // Current coin miner is mining
 
     public Miner(){
@@ -31,18 +31,20 @@ public class Miner extends Account{
         return this.coin;
     }
 
-    public KootenayKoin mine(KootenayKoin noNonceKoin) throws NoNonceFoundException {
+    public KootenayKoin mine(KootenayKoin noNonceKoin) throws NoNonceFoundException, InvalidTransactionException, InvalidKootenayKoinException {
         int nonce = 0;
         String value = "";
+
 
         while (nonce < Integer.MAX_VALUE){
             noNonceKoin.setNonce(nonce);
 
             value = noNonceKoin.hash();
 
-            if (value.substring(0,DIFFICULTY).equals("0".repeat(DIFFICULTY))){
+            if (value.substring(0,Miner.DIFFICULTY).equals("0".repeat(Miner.DIFFICULTY))){
                 System.out.println("\n==========MINTED COIN==========\n" + noNonceKoin + "\n===============================");
                 blockchain.addKoinToChain(noNonceKoin);
+                noNonceKoin.validate();
                 return noNonceKoin;
             }
 
@@ -55,14 +57,13 @@ public class Miner extends Account{
     public void createGenesisKoin(String genesisString, Transactions transactions, int difficulty) {
         this.coin = KootenayKoin.createGenesisKoin(genesisString, transactions, difficulty);
     }
-
-    public boolean validateTransactions() throws InvalidTransactionException{
-        for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
-            if (Account.calculateBalance(coin.getTransactions().getTransaction(i).getAddressFrom(), this.blockchain) <
-                    coin.getTransactions().getTransaction(i).getAddressFrom()){
-                throw new InvalidTransactionException(coin.getTransactions().getTransaction(i).toString());
-            }
+    /*
+    public boolean validateTransactions(){
+        try {
+            this.coin.getTransactions().validate(blockchain);
+        } catch(InvalidTransactionException e){
+            System.out.println("Invalid Transaction: \n");
         }
         return true;
-    }
+    }*/
 }

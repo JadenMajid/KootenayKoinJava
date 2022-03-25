@@ -6,13 +6,21 @@ public class Main{
 
         miner.makeKootenayKoin();
 
-        miner.createGenesisKoin("0this too shall pass",
-                Transactions.generateTransactions(),
+        // populates accounts with random balances
+        Transactions genesisTransactions = new Transactions();
+        genesisTransactions.populateAccountBalances();
+
+        miner.createGenesisKoin("0".repeat(Miner.DIFFICULTY) + "this too shall pass",
+                genesisTransactions,
                 1);
 
         try {
             miner.mine(miner.getKootenayKoin());
         } catch (NoNonceFoundException e) {
+            e.printStackTrace();
+        } catch (InvalidTransactionException e) {
+            e.printStackTrace();
+        } catch (InvalidKootenayKoinException e) {
             e.printStackTrace();
         }
         System.out.println(miner.getBlock(0) + "\n===============================");
@@ -21,6 +29,10 @@ public class Main{
             try {
                 koin = miner.mine(koin);
             } catch (NoNonceFoundException e) {
+                e.printStackTrace();
+            } catch (InvalidTransactionException e) {
+                e.printStackTrace();
+            } catch (InvalidKootenayKoinException e) {
                 e.printStackTrace();
             }
             System.out.println(koin);

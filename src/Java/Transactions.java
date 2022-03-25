@@ -1,7 +1,7 @@
 package Java;
 
 class Transactions {
-    Transaction[] transactions;
+    Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
 
     Transactions() {
     }
@@ -29,11 +29,32 @@ class Transactions {
     public static Transactions generateTransactions(){
         Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
-            transactions[i] = new Transaction(Math.random(), (int) (Math.random() * 100), (int) (Math.random() * 100));
+            transactions[i] = new Transaction(Math.random(), (int) (Math.random() * Account.amountOfAccounts),
+                    (int) (Math.random() * Account.amountOfAccounts));
         }
         // Mining reward
-        transactions[KootenayKoin.transactionsPerKoin-1] = new Transaction(100, 1, -1);
+        transactions[KootenayKoin.transactionsPerKoin-1] = new Transaction(KootenayKoin.miningReward, 1, -1);
         return new Transactions(transactions);
+    }
+
+    public void populateAccountBalances(){
+        for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
+            transactions[i] = new Transaction(10 , (int)(Math.random() * Account.amountOfAccounts) , -1);
+        }
+    }
+
+    public boolean validate(KootenayKoinBlockchain blockchain) throws InvalidTransactionException{
+        for (int i = 0; i < KootenayKoin.transactionsPerKoin-1; i++){
+            try {
+                this.transactions[i].validate(blockchain);
+            } catch(InvalidTransactionException e){
+                throw e;
+            }
+        }
+
+
+
+        return true;
     }
 
     public void addTransaction(Transaction transactionAdded) throws TransactionAdditionException{
