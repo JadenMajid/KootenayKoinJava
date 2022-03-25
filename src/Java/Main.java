@@ -5,7 +5,7 @@ import static Java.KootenayKoinBlockchain.calculateBalance;
 public class Main{
     public static void main(String[] args){
         Account.setActiveBlockchain(new KootenayKoinBlockchain());
-        
+
         Miner miner = new Miner(1);
 
         miner.makeKootenayKoin();
@@ -30,7 +30,7 @@ public class Main{
 
 
         for (int i = 1; i < 4; i++){
-            KootenayKoin koin = new KootenayKoin(miner.getBlock(i-1).hash(), Transactions.generateValidTransactions(miner.getBlockchain()), i, Miner.DIFFICULTY);
+            KootenayKoin koin = new KootenayKoin(miner.getBlock(i-1).hash(), Transactions.generateValidTransactions(Account.blockchain), i, Miner.DIFFICULTY);
             try {
                 koin = miner.mine(koin);
             } catch (NoNonceFoundException e) {
