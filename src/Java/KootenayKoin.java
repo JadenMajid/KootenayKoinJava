@@ -11,6 +11,7 @@ class KootenayKoin {
     public String previousHash;
     public int nonce = 0;
     public Transactions transactions;
+    static int transactionsPerKoin = 8;
 
     public KootenayKoin(){}
 
@@ -38,6 +39,10 @@ class KootenayKoin {
     // sets nonce
     public void setNonce(int nonce){
         this.nonce = nonce;
+    }
+
+    public Transactions getTransactions(){
+        return transactions;
     }
 
     // Returns the data of the block
