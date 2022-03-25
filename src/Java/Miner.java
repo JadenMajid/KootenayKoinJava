@@ -1,6 +1,8 @@
 package Java;
 
+public class Miner extends Account{
     public int DIFFICULTY = 3;
+    private KootenayKoin coin; // Current coin miner is mining
 
     public Miner(){
         this.coin = null;
@@ -57,6 +59,8 @@ package Java;
     public boolean validateTransactions() throws InvalidTransactionException{
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
             if (Account.calculateBalance(coin.getTransactions().getTransaction(i).getAddressFrom(), this.blockchain) <
+                    coin.getTransactions().getTransaction(i).getAddressFrom()){
+                throw new InvalidTransactionException(coin.getTransactions().getTransaction(i).toString());
             }
         }
         return true;
