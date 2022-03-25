@@ -18,7 +18,7 @@ class Transactions {
     public static Transactions generateTransactions(int startIndex){
         Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
         for (int i = startIndex; i < KootenayKoin.transactionsPerKoin-1; i++){
-            transactions[i] = new Transaction(Math.random(), (int) (Math.random() * 100), (int) (Math.random() * 100));
+            transactions[i] = new Transaction(Math.random() * 10, (int) (Math.random() * 100), (int) (Math.random() * 100));
         }
         // Mining reward
         transactions[KootenayKoin.transactionsPerKoin-1] = new Transaction(100, 1, -1);
@@ -29,7 +29,7 @@ class Transactions {
     public static Transactions generateTransactions(){
         Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
-            transactions[i] = new Transaction(Math.random(), (int) (Math.random() * Account.amountOfAccounts),
+            transactions[i] = new Transaction(Math.random() * 100, (int) (Math.random() * Account.amountOfAccounts),
                     (int) (Math.random() * Account.amountOfAccounts));
         }
         // Mining reward
@@ -51,8 +51,6 @@ class Transactions {
                 throw e;
             }
         }
-
-
 
         return true;
     }

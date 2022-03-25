@@ -37,4 +37,7 @@ public class Account {
         return balance;
     }
 
+    public KootenayKoinBlockchain getBlockchain() {
+        return this.blockchain;
+    }
 }

@@ -3,11 +3,10 @@ package Java;
 import java.util.LinkedList;
 
 public class KootenayKoinBlockchain {
-    LinkedList<KootenayKoin> blockchain = new LinkedList<>();
+    LinkedList<KootenayKoin> blockchain;
 
     public KootenayKoinBlockchain(){
         blockchain = new LinkedList<>();
-        return;
     }
     public void addKootenayKoin(KootenayKoin koin){
         blockchain.add(koin);
@@ -16,7 +15,7 @@ public class KootenayKoinBlockchain {
     // Adds Koin to current blockchain
     public void addKoinToChain(KootenayKoin koin){
         try {
-            if (koin.validate()){
+            if (koin.validate(this)){
                 blockchain.add(koin);
             }
         } catch(InvalidKootenayKoinException e) {
@@ -53,9 +52,9 @@ public class KootenayKoinBlockchain {
     public boolean validate() throws InvalidKootenayKoinException {
         // checks genesis block
         try {
-            blockchain.get(0).validate();
+            blockchain.get(0).validate(this);
         } catch(InvalidTransactionException e){
-            System.out.println("Invalid Transaction detected: \n" + blockchain.get(0).getTransactions());
+            System.out.println("Invalid Transaction detected: \n" + e);
         }
         //
         for (int i = 1; i < blockchain.size(); i++){

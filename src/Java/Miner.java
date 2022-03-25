@@ -1,7 +1,7 @@
 package Java;
 
 public class Miner extends Account{
-    public static int DIFFICULTY = 5;
+    public static int DIFFICULTY = 3;
     private KootenayKoin coin; // Current coin miner is mining
 
     public Miner(){
@@ -43,7 +43,7 @@ public class Miner extends Account{
             if (value.substring(0,Miner.DIFFICULTY).equals("0".repeat(Miner.DIFFICULTY))){
                 System.out.println("\n==========MINTED COIN==========\n" + noNonceKoin + "\n===============================");
                 blockchain.addKoinToChain(noNonceKoin);
-                noNonceKoin.validate();
+                noNonceKoin.validate(blockchain);
                 return noNonceKoin;
             }
 

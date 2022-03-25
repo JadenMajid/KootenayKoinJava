@@ -14,7 +14,6 @@ class KootenayKoin {
     private String previousHash;
     private int nonce;
     private Transactions transactions;
-    static int transactionsPerKoin = 8;
 
 
     public KootenayKoin(){}
@@ -81,13 +80,14 @@ class KootenayKoin {
     }
 
     // Validation method to validate this block as valid, can also be accessed with a String for prev hash
-    public boolean validate() throws InvalidKootenayKoinException, InvalidTransactionException {
+    public boolean validate(KootenayKoinBlockchain blockchain) throws InvalidKootenayKoinException, InvalidTransactionException {
         String value = this.hash();
         if (!value.substring(0, this.difficulty).equals("0".repeat(this.difficulty))){
             System.out.println("Invalid Block:\n" + this.toString());
             throw new InvalidKootenayKoinException("Invalid Block",
                     new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
         }
+        transactions.validate(blockchain);
 
         return true;
     }
