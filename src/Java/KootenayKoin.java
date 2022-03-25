@@ -8,10 +8,9 @@ import java.security.NoSuchAlgorithmException;
 class KootenayKoin {
     int blockNumber = 0;
     int difficulty = 1;
-    public String previousHash;
-    public int nonce = 0;
-    public Transactions transactions;
-    static int transactionsPerKoin = 8;
+    private String previousHash;
+    private int nonce;
+    private Transactions transactions;
 
     public KootenayKoin(){}
 
@@ -36,13 +35,17 @@ class KootenayKoin {
         return new KootenayKoin(genesisMessage, 0, transactions, 0, difficulty);
     }
 
+    public String getPreviousHash() {
+        return this.previousHash;
+    }
+
     // sets nonce
     public void setNonce(int nonce){
         this.nonce = nonce;
     }
 
-    public Transactions getTransactions(){
-        return transactions;
+    public Transactions getTransactions() {
+        return this.transactions;
     }
 
     // Returns the data of the block

@@ -3,36 +3,41 @@ package Java;
 public class Miner {
     public int address;
     public int DIFFICULTY = 3;
-    public KootenayKoin coin = null;
+    private KootenayKoin coin;
     public KootenayKoinBlockchain blockchain = new KootenayKoinBlockchain();
 
     public Miner(){
+        this.coin = null;
     }
 
     public Miner(int address){
         this.address = address;
+        this.coin = null;
     }
 
     public Miner(int address, KootenayKoinBlockchain blockchain){
         this.address = address;
         this.blockchain = blockchain;
+        this.coin = null;
     }
 
     public KootenayKoin getBlock(int i){
         return blockchain.getBlock(i);
     }
 
-    public void makeKootenayKoin(){
-        coin = new KootenayKoin();
+    public void makeKootenayKoin(){ // Set method for Miner.coin
+        this.coin = new KootenayKoin();
     }
 
-    public KootenayKoin mine(KootenayKoin noNonceKoin){
-        boolean foundNonce = false;
+    public KootenayKoin getKootenayKoin(){
+        return this.coin;
+    }
+
+    public KootenayKoin mine(KootenayKoin noNonceKoin) throws NoNonceFoundException {
         int nonce = 0;
         String value = "";
 
-        while (!foundNonce && nonce < Integer.MAX_VALUE){
-            nonce++;
+        while (nonce < Integer.MAX_VALUE){
             noNonceKoin.setNonce(nonce);
 
             value = noNonceKoin.hash();
@@ -40,16 +45,16 @@ public class Miner {
             if (value.substring(0,DIFFICULTY).equals("0".repeat(DIFFICULTY))){
                 System.out.println("\n==========MINTED COIN==========\n" + noNonceKoin + "\n===============================");
                 blockchain.addKoinToChain(noNonceKoin);
-                foundNonce = true;
                 return noNonceKoin;
             }
+
+            nonce++;
         }
 
-        noNonceKoin.setNonce(0);
-        return noNonceKoin;
+        throw new NoNonceFoundException(this.coin);
     }
 
     public void createGenesisKoin(String genesisString, Transactions transactions, int difficulty) {
-        coin = KootenayKoin.createGenesisKoin(genesisString, transactions, difficulty);
+        this.coin = KootenayKoin.createGenesisKoin(genesisString, transactions, difficulty);
     }
 }
