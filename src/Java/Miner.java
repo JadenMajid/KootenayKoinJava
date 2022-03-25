@@ -30,7 +30,6 @@ public class Miner extends Account{
     public KootenayKoin getKootenayKoin(){
         return this.coin;
     }
-
     public KootenayKoin mine(KootenayKoin noNonceKoin) throws NoNonceFoundException, InvalidTransactionException, InvalidKootenayKoinException {
         int nonce = 0;
         String value = "";
