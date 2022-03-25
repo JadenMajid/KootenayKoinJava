@@ -6,12 +6,15 @@ import java.security.NoSuchAlgorithmException;
 
 
 class KootenayKoin {
+    static int transactionsPerKoin = 8;
+
     int blockNumber = 0;
     int difficulty = 1;
     private String previousHash;
     private int nonce;
     private Transactions transactions;
     static int transactionsPerKoin = 8;
+
 
     public KootenayKoin(){}
 
@@ -80,7 +83,8 @@ class KootenayKoin {
     public boolean validate() throws InvalidKootenayKoinException {
         String value = this.hash();
         if (!value.substring(0, this.difficulty).equals("0".repeat( this.difficulty))){
-            throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
+            throw new InvalidKootenayKoinException("Invalid Block",
+                    new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
         }
 
         return true;

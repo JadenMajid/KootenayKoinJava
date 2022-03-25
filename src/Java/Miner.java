@@ -1,17 +1,17 @@
 package Java;
 
-public class Miner {
-    public int address;
+public class Miner extends Account{
     public int DIFFICULTY = 3;
-    private KootenayKoin coin;
+    private KootenayKoin coin; // Current coin miner is mining
     public KootenayKoinBlockchain blockchain = new KootenayKoinBlockchain();
+
 
     public Miner(){
         this.coin = null;
     }
 
     public Miner(int address){
-        this.address = address;
+        super(address);
         this.coin = null;
     }
 
@@ -32,7 +32,6 @@ public class Miner {
     public KootenayKoin getKootenayKoin(){
         return this.coin;
     }
-
     public KootenayKoin mine(KootenayKoin noNonceKoin) throws NoNonceFoundException {
         int nonce = 0;
         String value = "";
@@ -56,5 +55,15 @@ public class Miner {
 
     public void createGenesisKoin(String genesisString, Transactions transactions, int difficulty) {
         this.coin = KootenayKoin.createGenesisKoin(genesisString, transactions, difficulty);
+    }
+
+    public boolean validateTransactions() throws InvalidTransactionException{
+        for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
+            if (Account.calculateBalance(coin.getTransactions().getTransaction(i).getAddressFrom(), this.blockchain) <
+                    coin.getTransactions().getTransaction(i).getAddressFrom()){
+                throw new InvalidTransactionException(coin.getTransactions().getTransaction(i).toString());
+            }
+        }
+        return true;
     }
 }

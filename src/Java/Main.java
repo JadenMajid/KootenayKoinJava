@@ -5,6 +5,7 @@ public class Main{
         Miner miner = new Miner(1);
 
         miner.makeKootenayKoin();
+
         miner.createGenesisKoin("0this too shall pass",
                 Transactions.generateTransactions(),
                 1);
@@ -24,5 +25,7 @@ public class Main{
             }
             System.out.println(koin);
         }
+
+        System.out.println("Miner account Bal:" + miner.calculateBalance());
     }
 }
