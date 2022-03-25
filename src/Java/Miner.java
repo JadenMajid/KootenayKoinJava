@@ -13,12 +13,6 @@ public class Miner extends Account{
         this.coin = null;
     }
 
-    public Miner(int address, KootenayKoinBlockchain blockchain){
-        this.address = address;
-        this.blockchain = blockchain;
-        this.coin = null;
-    }
-
     public KootenayKoin getBlock(int i){
         return blockchain.getBlock(i);
     }
@@ -49,6 +43,7 @@ public class Miner extends Account{
             nonce++;
         }
 
+        // No working nonce found indicating something wrong happened, throw an exception
         throw new NoNonceFoundException(this.coin);
     }
 

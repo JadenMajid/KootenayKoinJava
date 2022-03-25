@@ -3,18 +3,21 @@ package Java;
 public class Account {
     static int amountOfAccounts = 10;
 
-    public int address = 0;
-    public KootenayKoinBlockchain blockchain = new KootenayKoinBlockchain();
+    private int address;
+    public static KootenayKoinBlockchain blockchain;
 
     public Account(){}
 
-    public Account(int address, KootenayKoinBlockchain blockchain){
-        this.address = address;
-        this.blockchain = blockchain;
-    }
-
     public Account(int address){
         this.address = address;
+    }
+
+    public static void setActiveBlockchain(KootenayKoinBlockchain _blockchain) {
+        blockchain = _blockchain;
+    }
+
+    public int getAddress() {
+        return this.address;
     }
 
     public Transaction createTransaction(double amount, int addressTo){
@@ -35,9 +38,5 @@ public class Account {
             }
         }
         return balance;
-    }
-
-    public KootenayKoinBlockchain getBlockchain() {
-        return this.blockchain;
     }
 }
