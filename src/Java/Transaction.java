@@ -1,9 +1,9 @@
 package Java;
 
 public class Transaction {
-    public double amount;
-    public int addressTo;
-    public int addressFrom;
+    private double amount;
+    private int addressTo;
+    private int addressFrom;
 
     public Transaction() {
     }
@@ -12,6 +12,18 @@ public class Transaction {
         this.amount = amount;
         this.addressTo = addressTo;
         this.addressFrom = addressFrom;
+    }
+
+    public double getAmount() {
+        return this.amount;
+    }
+
+    public int getAddressTo() {
+        return this.addressTo;
+    }
+
+    public int getAddressFrom() {
+        return this.addressFrom;
     }
 
     public String toString() {

@@ -6,7 +6,7 @@ public class KootenayKoinBlockchain {
     LinkedList<KootenayKoin> blockchain = new LinkedList<>();
 
     public KootenayKoinBlockchain(){
-        LinkedList<KootenayKoin> blockchain = new LinkedList<>();
+        blockchain = new LinkedList<>();
         return;
     }
     public void addKootenayKoin(KootenayKoin koin){
@@ -36,7 +36,7 @@ public class KootenayKoinBlockchain {
         //
         for (int i = 1; i < blockchain.size(); i++){
             try {
-                blockchain.get(i).validate(blockchain.get(i-1).previousHash);
+                blockchain.get(i).validate(blockchain.get(i-1).getPreviousHash());
             } catch(InvalidKootenayKoinException e) {
                 System.out.println("invalid blockchain");
                 return false;
