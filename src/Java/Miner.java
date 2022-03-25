@@ -1,12 +1,8 @@
 package Java;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class Miner {
     public int address;
-    public int DIFFICULTY = 1;
+    public int DIFFICULTY = 3;
     public KootenayKoin coin = null;
     public KootenayKoinBlockchain blockchain = new KootenayKoinBlockchain();
 
@@ -34,32 +30,15 @@ public class Miner {
         boolean foundNonce = false;
         int nonce = 0;
         String value = "";
-        MessageDigest digest = null;
-
-        try {
-            digest = MessageDigest.getInstance("SHA-1");
-        } catch (NoSuchAlgorithmException e){
-            e.printStackTrace();
-        }
-
 
         while (!foundNonce && nonce < Integer.MAX_VALUE){
             nonce++;
             noNonceKoin.setNonce(nonce);
-            value = noNonceKoin.toString();
-            digest.reset();
 
-            try {
-                digest.update(value.getBytes("utf8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            value = noNonceKoin.hash();
 
-            value = String.format("%040x", new BigInteger(1, digest.digest()));
-            System.out.println(value);
-
-            if (value.substring(0,DIFFICULTY) == "0".repeat(DIFFICULTY)){
-                System.out.println("\n==========MINTED COIN==========" + noNonceKoin + "\n===============================");
+            if (value.substring(0,DIFFICULTY).equals("0".repeat(DIFFICULTY))){
+                System.out.println("\n==========MINTED COIN==========\n" + noNonceKoin + "\n===============================");
                 blockchain.addKoinToChain(noNonceKoin);
                 foundNonce = true;
                 return noNonceKoin;
@@ -70,7 +49,7 @@ public class Miner {
         return noNonceKoin;
     }
 
-    public void createGenesisBlock(String genesisString, Transactions transactions, int difficulty) {
-        blockchain.addKoinToChain(KootenayKoin.createGenesisBlock(genesisString, transactions, difficulty));
+    public void createGenesisKoin(String genesisString, Transactions transactions, int difficulty) {
+        coin = KootenayKoin.createGenesisKoin(genesisString, transactions, difficulty);
     }
 }

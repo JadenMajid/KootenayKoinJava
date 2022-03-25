@@ -34,7 +34,7 @@ public class KootenayKoinBlockchain {
         blockchain.get(0).validate();
 
         //
-        for (int i = 0; i < blockchain.size(); i++){
+        for (int i = 1; i < blockchain.size(); i++){
             try {
                 blockchain.get(i).validate(blockchain.get(i-1).previousHash);
             } catch(InvalidKootenayKoinException e) {

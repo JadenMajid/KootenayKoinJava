@@ -28,6 +28,20 @@ class Transactions {
         return new Transactions(transactions);
     }
 
+    public void addTransaction(Transaction transactionAdded) throws TransactionAdditionException{
+        int i = -1;
+        for(int j = 1; j < 127;j++){
+            if (transactions[j] == null){
+                i = j;
+                break;
+            }
+        }
+        if (i == -1){
+            throw new TransactionAdditionException();
+        }
+        transactions[i] = transactionAdded;
+    }
+
     // Returns string representation of transaction list
     public String toString() {
         String out = "\n";

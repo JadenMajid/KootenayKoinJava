@@ -31,7 +31,7 @@ class KootenayKoin {
         this.difficulty = difficulty;
     }
 
-    public static KootenayKoin createGenesisBlock(String genesisMessage, Transactions transactions, int difficulty){
+    public static KootenayKoin createGenesisKoin(String genesisMessage, Transactions transactions, int difficulty){
         return new KootenayKoin(genesisMessage, 0, transactions, 0, difficulty);
     }
 
@@ -47,7 +47,7 @@ class KootenayKoin {
 
     // Hashes this coin and returns String value
     public String hash(){
-        String value = "";
+        String value = this.toString();
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-1");
@@ -70,7 +70,7 @@ class KootenayKoin {
     // Validation method to validate this block as valid, can also be accessed with a String for prev hash
     public boolean validate() throws InvalidKootenayKoinException {
         String value = this.hash();
-        if (value.substring(0, this.difficulty).equals("0".repeat( this.difficulty))){
+        if (!value.substring(0, this.difficulty).equals("0".repeat( this.difficulty))){
             throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
         }
 
