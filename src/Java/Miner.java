@@ -3,6 +3,8 @@ package Java;
 public class Miner extends Account{
     public int DIFFICULTY = 3;
     private KootenayKoin coin; // Current coin miner is mining
+    public KootenayKoinBlockchain blockchain = new KootenayKoinBlockchain();
+
 
     public Miner(){
         this.coin = null;
@@ -30,7 +32,6 @@ public class Miner extends Account{
     public KootenayKoin getKootenayKoin(){
         return this.coin;
     }
-
     public KootenayKoin mine(KootenayKoin noNonceKoin) throws NoNonceFoundException {
         int nonce = 0;
         String value = "";

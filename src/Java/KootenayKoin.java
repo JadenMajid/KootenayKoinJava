@@ -13,6 +13,8 @@ class KootenayKoin {
     private String previousHash;
     private int nonce;
     private Transactions transactions;
+    static int transactionsPerKoin = 8;
+
 
     public KootenayKoin(){}
 
