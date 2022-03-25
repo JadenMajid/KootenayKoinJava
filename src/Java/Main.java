@@ -4,6 +4,8 @@ import static Java.KootenayKoinBlockchain.calculateBalance;
 
 public class Main{
     public static void main(String[] args){
+        Account.setActiveBlockchain(new KootenayKoinBlockchain());
+        
         Miner miner = new Miner(1);
 
         miner.makeKootenayKoin();
@@ -44,7 +46,7 @@ public class Main{
         System.out.println("Miner account Balance :" + miner.calculateBalance() + "₭");
 
         for (int i = 0; i < Account.amountOfAccounts; i++){
-            System.out.println("Account #" + i + " Balance: " + calculateBalance(i, miner.getBlockchain()) + "₭");
+            System.out.println("Account #" + i + " Balance: " + calculateBalance(i, Account.blockchain) + "₭");
         }
     }
 }
