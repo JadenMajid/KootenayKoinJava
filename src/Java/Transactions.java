@@ -37,6 +37,20 @@ class Transactions {
         return new Transactions(transactions);
     }
 
+    public static Transactions generateValidTransactions(KootenayKoinBlockchain blockchain){
+        Transactions transactions = generateTransactions();
+
+        for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
+            transactions.setTransaction(i, Transaction.generateValidTransaction(blockchain));
+        }
+
+        return transactions;
+    }
+
+    public void setTransaction(int i, Transaction transaction){
+        this.transactions[i] = transaction;
+    }
+
     public void populateAccountBalances(){
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
             transactions[i] = new Transaction(10 , (int)(Math.random() * Account.amountOfAccounts) , -1);

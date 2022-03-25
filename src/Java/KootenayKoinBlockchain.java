@@ -46,8 +46,6 @@ public class KootenayKoinBlockchain {
         return balance;
     }
 
-
-
     // Validates blockchain
     public boolean validate() throws InvalidKootenayKoinException {
         // checks genesis block
