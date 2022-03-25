@@ -1,17 +1,13 @@
 package Java;
 
-public class Miner {
-    public int address;
     public int DIFFICULTY = 3;
-    private KootenayKoin coin;
-    public KootenayKoinBlockchain blockchain = new KootenayKoinBlockchain();
 
     public Miner(){
         this.coin = null;
     }
 
     public Miner(int address){
-        this.address = address;
+        super(address);
         this.coin = null;
     }
 
@@ -56,5 +52,13 @@ public class Miner {
 
     public void createGenesisKoin(String genesisString, Transactions transactions, int difficulty) {
         this.coin = KootenayKoin.createGenesisKoin(genesisString, transactions, difficulty);
+    }
+
+    public boolean validateTransactions() throws InvalidTransactionException{
+        for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
+            if (Account.calculateBalance(coin.getTransactions().getTransaction(i).getAddressFrom(), this.blockchain) <
+            }
+        }
+        return true;
     }
 }
