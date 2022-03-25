@@ -10,10 +10,14 @@ class Transactions {
         this.transactions = transactions;
     }
 
+    public Transaction getTransaction(int i){
+        return transactions[i];
+    }
+
     //  Method to populate transaction list with starting index changed only
     public static Transactions generateTransactions(int startIndex){
-        Transaction[] transactions = new Transaction[128];
-        for (int i = startIndex; i < 128; i++){
+        Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
+        for (int i = startIndex; i < KootenayKoin.transactionsPerKoin; i++){
             transactions[i] = new Transaction(Math.random(), (int) (Math.random() * 100), (int) (Math.random() * 100));
         }
         return new Transactions(transactions);
@@ -21,8 +25,8 @@ class Transactions {
 
     // Secondary Method to generate full transaction list
     public static Transactions generateTransactions(){
-        Transaction[] transactions = new Transaction[128];
-        for (int i = 0; i < 128; i++){
+        Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
+        for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
             transactions[i] = new Transaction(Math.random(), (int) (Math.random() * 100), (int) (Math.random() * 100));
         }
         return new Transactions(transactions);
@@ -30,7 +34,7 @@ class Transactions {
 
     public void addTransaction(Transaction transactionAdded) throws TransactionAdditionException{
         int i = -1;
-        for(int j = 1; j < 127;j++){
+        for(int j = 1; j < KootenayKoin.transactionsPerKoin;j++){
             if (transactions[j] == null){
                 i = j;
                 break;
@@ -46,7 +50,7 @@ class Transactions {
     public String toString() {
         String out = "\n";
 
-        for (int i = 0; i < 127; i++) {
+        for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++) {
             out = out + transactions[i] + "\n";
         }
         return out + "\n";

@@ -5,11 +5,10 @@ public class Main{
         Miner miner = new Miner(1);
 
         miner.makeKootenayKoin();
-        //System.out.println(miner.coin);
-        // I think current problem is genesis block is created but blockchain not initialized
         miner.createGenesisKoin("0this too shall pass",
                 Transactions.generateTransactions(),
                 1);
+
         try {
             miner.mine(miner.getKootenayKoin());
         } catch (NoNonceFoundException e) {

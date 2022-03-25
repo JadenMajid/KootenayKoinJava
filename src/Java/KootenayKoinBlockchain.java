@@ -28,6 +28,8 @@ public class KootenayKoinBlockchain {
         return blockchain.get(i);
     }
 
+
+
     // Validates blockchain
     public boolean validate() throws InvalidKootenayKoinException {
         // checks genesis block
