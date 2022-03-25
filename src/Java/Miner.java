@@ -34,7 +34,6 @@ public class Miner extends Account{
         int nonce = 0;
         String value = "";
 
-
         while (nonce < Integer.MAX_VALUE){
             noNonceKoin.setNonce(nonce);
 

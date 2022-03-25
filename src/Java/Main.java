@@ -28,7 +28,7 @@ public class Main{
 
 
         for (int i = 1; i < 4; i++){
-            KootenayKoin koin = new KootenayKoin(miner.getBlock(i-1).hash(), Transactions.generateTransactions(), i, Miner.DIFFICULTY);
+            KootenayKoin koin = new KootenayKoin(miner.getBlock(i-1).hash(), Transactions.generateValidTransactions(miner.getBlockchain()), i, Miner.DIFFICULTY);
             try {
                 koin = miner.mine(koin);
             } catch (NoNonceFoundException e) {
