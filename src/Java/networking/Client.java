@@ -12,5 +12,9 @@ public class Client {
     public Client() {
         this.mainServer = new ClientAcceptingThread();
         this.mainServer.start();
+    public Client() {
+
+=======
+>>>>>>> Stashed changes
     }
 }

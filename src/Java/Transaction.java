@@ -30,8 +30,6 @@ public class Transaction {
         this.signature = sender.getSignature();
         this.publicKey = sender.getPublicKey();
         this.timeValidated = -1; // Set to -1 to indicate that it has not yet been validated
-
-        sender = null;
     }
 
     public static Transaction generateValidTransaction() {
