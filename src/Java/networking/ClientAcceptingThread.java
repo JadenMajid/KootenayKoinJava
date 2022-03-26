@@ -3,32 +3,43 @@ package Java.networking;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
-class ServerThread extends Thread {
+class ClientAcceptingThread extends Thread {
     private ServerSocket serverSocket;
     private Socket clientSocket;
 
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(Client.PORT); // Random port
-        } catch (IOException e) {
-            System.err.println("Unable to start ClientAcceptingThread on port " + Client.PORT);
+            this.serverSocket = new ServerSocket(Client.PORT);
+        } catch(IOException e) {
+            System.err.println("Unable to start ServerSocket on port " + Client.PORT);
             e.printStackTrace();
         }
 
-        try {
-            clientSocket = serverSocket.accept();
-        } catch (IOException e) {
-            System.err.println("Unable to accept incoming connection to ClientAcceptingThread.");
-            e.printStackTrace();
+        while(true) {
+            try {
+                this.clientSocket = this.serverSocket.accept();
+
+                // Debug
+                System.out.println("New client connected: " + this.clientSocket);
+    
+                Thread t = new ServerThread(this.clientSocket, new DataInputStream(clientSocket.getInputStream()),  new DataOutputStream(clientSocket.getOutputStream()));
+
+                t.start();
+            } catch(IOException e) {
+                System.err.println("Unable to accept incoming connection to ServerThread.");
+                e.printStackTrace();
+            }
         }
     }
 
     public void end() {
         try {
-            clientSocket.close();
-            serverSocket.close();
+            this.clientSocket.close();
+            this.serverSocket.close();
         } catch (IOException e) {
             System.err.println("Unable to properly close ClientAcceptingThread socekts.");
         }
