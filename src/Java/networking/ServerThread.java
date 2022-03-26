@@ -1,49 +1,50 @@
 package Java.networking;
 
-import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-class ServerThread extends Thread {
+public class ServerThread extends Thread {
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private PrintWriter outstream;
-    private BufferedReader instream;
+    private DataInputStream instream;
+    private DataOutputStream outstream;
+
+    public ServerThread(Socket clientSocket, DataInputStream instream, DataOutputStream outstream) {
+        this.clientSocket = clientSocket;
+        this.instream = instream;
+        this.outstream = outstream;
+    }
 
     @Override
     public void run() {
-        try {
-            serverSocket = new ServerSocket(Client.PORT); // Random port
-        } catch (IOException e) {
-            System.err.println("Unable to start ServerThread on port " + Client.PORT);
-            e.printStackTrace();
-        }
+        String received;
+        while(true) {
+            try {
+                received = instream.readUTF();
 
-        try {
-            clientSocket = serverSocket.accept();
-        } catch (IOException e) {
-            System.err.println("Unable to accept incoming connection to ServerThread.");
-            e.printStackTrace();
-        }
-
-        try {
-            outstream = new PrintWriter(clientSocket.getOutputStream(), true);
-            instream = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        } catch (IOException e) {
-            System.err.println("Unable to establish serverside IO streams.");
-            e.printStackTrace();
+                switch(received) { // Process received messages
+                    case "Exit":
+                        end();
+                        break;
+                    default:
+                        System.err.println("Unprocessed message from client: " + received);
+                }
+            } catch(IOException e) {
+                System.err.println("Problem receiving message from client.");
+                e.printStackTrace();
+            }
         }
     }
 
     public void end() {
         try {
-            outstream.close();
-            instream.close();
-            clientSocket.close();
-            serverSocket.close();
+            this.outstream.close();
+            this.instream.close();
+            this.clientSocket.close();
+            this.serverSocket.close();
         } catch (IOException e) {
             System.err.println("Unable to properly close ServerThread sockets/streams.");
         }
