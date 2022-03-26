@@ -1,52 +1,53 @@
 package Java.networking;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.ServerSocket;
+import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ServerThread extends Thread {
-    private ServerSocket serverSocket;
+public class ServerThread extends NetworkingThread {
     private Socket clientSocket;
-    private DataInputStream instream;
-    private DataOutputStream outstream;
+    private BufferedReader instream;
+    private PrintWriter outstream;
 
-    public ServerThread(Socket clientSocket, DataInputStream instream, DataOutputStream outstream) {
-        this.clientSocket = clientSocket;
-        this.instream = instream;
-        this.outstream = outstream;
+    public ServerThread(Socket socket) {
+        super(socket, true);
     }
 
     @Override
     public void run() {
-        String received;
-        while(true) {
-            try {
-                received = instream.readUTF();
-
-                switch(received) { // Process received messages
+        String receivedLine;
+        try {
+            while((receivedLine = instream.readLine()) != null) { // Read new line
+                switch(receivedLine) { // Process received line
                     case "Exit":
-                        end();
+                        stopConnection();
                         break;
                     default:
-                        System.err.println("Unprocessed message from client: " + received);
+                        System.err.println("Unprocessed message from client: " + receivedLine);
                 }
-            } catch(IOException e) {
-                System.err.println("Problem receiving message from client.");
-                e.printStackTrace();
             }
+        } catch(IOException e) {
+            System.err.println("Problem receiving message from client.");
+            e.printStackTrace();
+        } finally {
+            stopConnection();
         }
     }
 
-    public void end() {
+    public void stopConnection() {
         try {
-            this.outstream.close();
-            this.instream.close();
-            this.clientSocket.close();
-            this.serverSocket.close();
+            sendMessage("exit");
+
+            if (this.outstream != null)
+                this.outstream.close();
+            if (this.instream != null) {
+                this.instream.close();
+                this.clientSocket.close();
+            }
+            this.setConnectionStatus(false);
         } catch (IOException e) {
-            System.err.println("Unable to properly close ServerThread sockets/streams.");
+            System.err.println("Unable to properly close client connection.");
         }
     }
 }

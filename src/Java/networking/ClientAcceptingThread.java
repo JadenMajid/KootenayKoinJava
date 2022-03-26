@@ -1,10 +1,16 @@
 package Java.networking;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+
+/**
+ * TO-DO:
+ * - Share connected clients with connections (so that the network propagates through each new connection)
+ * - Program ClientThreadFactory.java (needs to create new clients for each new possible connection and connect them)
+ * - Implement blockchain validation through the network
+ */
 
 class ClientAcceptingThread extends Thread {
     private ServerSocket serverSocket;
@@ -14,6 +20,8 @@ class ClientAcceptingThread extends Thread {
     public void run() {
         try {
             this.serverSocket = new ServerSocket(Client.PORT);
+
+            Client.connectedAddresses.add(InetAddress.getLocalHost());
         } catch(IOException e) {
             System.err.println("Unable to start ServerSocket on port " + Client.PORT);
             e.printStackTrace();
@@ -26,7 +34,7 @@ class ClientAcceptingThread extends Thread {
                 // Debug
                 System.out.println("New client connected: " + this.clientSocket);
     
-                Thread t = new ServerThread(this.clientSocket, new DataInputStream(clientSocket.getInputStream()),  new DataOutputStream(clientSocket.getOutputStream()));
+                Thread t = new Thread(new ServerThread(this.clientSocket));
 
                 t.start();
             } catch(IOException e) {
