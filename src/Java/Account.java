@@ -4,12 +4,11 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
-import java.security.*;
-
-import java.security
-        .KeyPairGenerator;
-import java.security
-        .SecureRandom;
+import java.security.InvalidKeyException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 
 public class Account {
     static int amountOfAccounts = 10;
@@ -71,7 +70,7 @@ public class Account {
     public double calculateBalance(){
 
         double balance = 0;
-        for (KootenayKoin koin: blockchain.blockchain) {
+        for (KootenayKoin koin : KootenayKoinBlockchain.blockchain) {
             Transactions transactions = koin.getTransactions();
             for (int i = 0; i< KootenayKoin.transactionsPerKoin; i++) {
                 if (transactions.getTransaction(i).getAddressFrom() == this.address) {
