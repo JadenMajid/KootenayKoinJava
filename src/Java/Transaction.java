@@ -85,7 +85,7 @@ public class Transaction {
         }
 
         try {
-            if (decoder.decryptText(this.signature ,this.publicKey).equals(addressFrom)){
+            if (decoder.decryptText(this.signature ,this.publicKey).equals(String.valueOf(addressFrom))){
                 return; // this is just a temporary fix to allow for accounts to have balance added without validation
             }           // although -1 would be a convenient option for mining reward
         } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {

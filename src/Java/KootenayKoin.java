@@ -1,6 +1,7 @@
 package Java;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -67,23 +68,21 @@ class KootenayKoin {
             e.printStackTrace();
         }
 
-        digest.reset();
-        try {
-            digest.update(value.getBytes("utf8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (digest != null) {
+            digest.reset();
+            digest.update(value.getBytes(StandardCharsets.UTF_8));
+            value = String.format("%040x", new BigInteger(1, digest.digest()));
         }
-
-        value = String.format("%040x", new BigInteger(1, digest.digest()));
 
         return value;
     }
 
     // Validation method to validate this block as valid, can also be accessed with a String for prev hash
-    public boolean validate(KootenayKoinBlockchain blockchain) throws InvalidKootenayKoinException, InvalidTransactionException {
+    public boolean validate() throws InvalidKootenayKoinException, InvalidTransactionException {
+
         String value = this.hash();
         if (!value.substring(0, this.difficulty).equals("0".repeat(this.difficulty))){
-            System.out.println("Invalid Block:\n" + this.toString());
+            System.out.println("Invalid Block:\n" + this);
             throw new InvalidKootenayKoinException("Invalid Block",
                     new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
         }
@@ -92,23 +91,15 @@ class KootenayKoin {
         return true;
     }
 
-    public boolean validate(String previousHash, KootenayKoinBlockchain blockchain) throws InvalidKootenayKoinException {
+    public void validate(String previousHash) throws InvalidKootenayKoinException, InvalidTransactionException {
         String value = this.hash();
         if (value.substring(0, this.difficulty).equals("0".repeat( this.difficulty)) &&
-                this.previousHash == previousHash){
+                this.previousHash.equals(previousHash) ){
             throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
         }
 
-        return true;
-    }
+        transactions.validate();
 
-    public boolean validate(String previousHash) throws InvalidKootenayKoinException{
-        String value = this.hash();
-        if (value.substring(0, this.difficulty).equals("0".repeat( this.difficulty)) &&
-                this.previousHash == previousHash){
-            throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
-        }
-        return true;
     }
 }
 

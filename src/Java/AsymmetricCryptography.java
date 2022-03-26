@@ -102,7 +102,7 @@ public class AsymmetricCryptography {
 
         if (new File("KeyPair/text.txt").exists()) {
             ac.encryptFile(ac.getFileInBytes(new File("KeyPair/text.txt")),
-                    new File("KeyPair/text_encrypted.txt"),privateKey);
+                    new File("KeyPair/text_encrypted.txt"), privateKey);
             ac.decryptFile(ac.getFileInBytes(new File("KeyPair/text_encrypted.txt")),
                     new File("KeyPair/text_decrypted.txt"), publicKey);
         } else {

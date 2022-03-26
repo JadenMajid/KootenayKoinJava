@@ -6,20 +6,28 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
 
-import java.security
-        .KeyPairGenerator;
-import java.security
-        .SecureRandom;
+import java.security.KeyPairGenerator;
+import java.security.SecureRandom;
+import java.util.LinkedList;
 
 public class Account {
     static int amountOfAccounts = 10;
+    static KootenayKoinBlockchain blockchain;
+    static LinkedList<Account> accounts;
+    static Account miningReward;
+
 
     private int address;
     private PrivateKey privateKey;
     private  PublicKey publicKey;
     private GenerateKeys keyGenerator;
     private AsymmetricCryptography signatureGen;
-    public static KootenayKoinBlockchain blockchain;
+
+
+    static { // initializes list of accounts could use this to initalize them
+        accounts = new LinkedList<Account>();
+        miningReward = new Account(-1);
+    }
 
     public Account() {
 
@@ -71,7 +79,8 @@ public class Account {
     public double calculateBalance(){
 
         double balance = 0;
-        for (KootenayKoin koin: blockchain.blockchain) {
+
+        for (KootenayKoin koin: KootenayKoinBlockchain.getBlockchain()) {
             Transactions transactions = koin.getTransactions();
             for (int i = 0; i< KootenayKoin.transactionsPerKoin; i++) {
                 if (transactions.getTransaction(i).getAddressFrom() == this.address) {

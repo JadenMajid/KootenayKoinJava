@@ -6,7 +6,7 @@ public class KootenayKoinBlockchain {
     static LinkedList<KootenayKoin> blockchain;
 
     public KootenayKoinBlockchain(){
-        blockchain = new LinkedList<>();
+        blockchain = new LinkedList<KootenayKoin>();
     }
     public void addKootenayKoin(KootenayKoin koin){
         blockchain.add(koin);
@@ -15,7 +15,7 @@ public class KootenayKoinBlockchain {
     // Adds Koin to current blockchain
     public void addKoinToChain(KootenayKoin koin){
         try {
-            if (koin.validate(this)){
+            if (koin.validate()){
                 blockchain.add(koin);
             }
         } catch(InvalidKootenayKoinException e) {
@@ -50,7 +50,7 @@ public class KootenayKoinBlockchain {
     public boolean validate() throws InvalidKootenayKoinException {
         // checks genesis block
         try {
-            blockchain.get(0).validate(this);
+            blockchain.get(0).validate();
         } catch(InvalidTransactionException e){
             System.out.println("Invalid Transaction detected: \n" + e);
         }
@@ -61,10 +61,17 @@ public class KootenayKoinBlockchain {
             } catch(InvalidKootenayKoinException e) {
                 System.out.println("invalid blockchain");
                 return false;
+            } catch (InvalidTransactionException e) {
+                e.printStackTrace();
             }
         }
         return true;
     }
+
+    public static LinkedList<KootenayKoin> getBlockchain() {
+        return blockchain;
+    }
+    public static int getSize(){return blockchain.size();}
 }
 
 

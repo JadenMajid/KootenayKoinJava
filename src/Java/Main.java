@@ -1,5 +1,6 @@
 package Java;
 
+import static Java.KootenayKoinBlockchain.blockchain;
 import static Java.KootenayKoinBlockchain.calculateBalance;
 
 public class Main{
@@ -8,7 +9,7 @@ public class Main{
 
         Miner miner = new Miner(1);
 
-        miner.makeKootenayKoin();
+        miner.setKootenayKoin(new KootenayKoin());
 
         // populates accounts with random balances
         Transactions genesisTransactions = new Transactions();
@@ -26,7 +27,7 @@ public class Main{
 
 
         for (int i = 1; i < 4; i++){
-            KootenayKoin koin = new KootenayKoin(miner.getBlock(i-1).hash(), Transactions.generateValidTransactions(miner), i, Miner.DIFFICULTY);
+            KootenayKoin koin = new KootenayKoin(blockchain.get(i-1).hash(), Transactions.generateValidTransactions(miner), i, Miner.DIFFICULTY);
             try {
                 koin = miner.mine(koin);
             } catch (NoNonceFoundException | InvalidKootenayKoinException | InvalidTransactionException e) {

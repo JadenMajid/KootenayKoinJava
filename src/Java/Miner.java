@@ -18,7 +18,13 @@ public class Miner extends Account{
     }
 
     public void makeKootenayKoin(){ // Set method for Miner.coin
-        this.coin = new KootenayKoin();
+        this.coin = new KootenayKoin(blockchain.getBlock(KootenayKoinBlockchain.getSize()).hash(),
+                Transactions.generateValidTransactions(this),
+                0, DIFFICULTY);
+    }
+
+    public void setKootenayKoin(KootenayKoin coin){
+        this.coin = coin;
     }
 
     public KootenayKoin getKootenayKoin(){
@@ -35,7 +41,7 @@ public class Miner extends Account{
             if (value.substring(0,Miner.DIFFICULTY).equals("0".repeat(Miner.DIFFICULTY))){
                 System.out.println("\n==========MINTED COIN==========\n" + noNonceKoin + "\n===============================");
                 blockchain.addKoinToChain(noNonceKoin);
-                noNonceKoin.validate(blockchain);
+                noNonceKoin.validate();
                 return noNonceKoin;
             }
 
