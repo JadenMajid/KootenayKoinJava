@@ -3,7 +3,7 @@ package Java;
 import java.util.LinkedList;
 
 public class KootenayKoinBlockchain {
-    LinkedList<KootenayKoin> blockchain;
+    static LinkedList<KootenayKoin> blockchain;
 
     public KootenayKoinBlockchain(){
         blockchain = new LinkedList<>();
@@ -29,11 +29,11 @@ public class KootenayKoinBlockchain {
         return blockchain.get(i);
     }
 
-    public static double calculateBalance(int address, KootenayKoinBlockchain blockchain){
+    public static double calculateBalance(int address){
 
         double balance = 0;
 
-        for (KootenayKoin koin: blockchain.blockchain) {
+        for (KootenayKoin koin: blockchain) {
             Transactions transactions = koin.getTransactions();
             for (int i = 0; i< KootenayKoin.transactionsPerKoin; i++) {
                 if (transactions.getTransaction(i).getAddressFrom() == address) {

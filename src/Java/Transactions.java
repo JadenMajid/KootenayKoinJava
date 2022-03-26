@@ -15,33 +15,33 @@ class Transactions {
     }
 
     //  Method to populate transaction list with starting index onwards changed only
-    public static Transactions generateTransactions(int startIndex){
+    public static Transactions generateTransactions(int startIndex, Account account){
         Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
         for (int i = startIndex; i < KootenayKoin.transactionsPerKoin-1; i++){
-            transactions[i] = new Transaction(Math.random() * 10, (int) (Math.random() * 100), (int) (Math.random() * 100));
+            transactions[i] = new Transaction(Math.random() * 10, (int) (Math.random() * 100), account);
         }
         // Mining reward
-        transactions[KootenayKoin.transactionsPerKoin-1] = new Transaction(100, 1, -1);
+        transactions[KootenayKoin.transactionsPerKoin-1] = new Transaction(100, 1, account);
         return new Transactions(transactions);
     }
 
-    // Secondary Method to generate full random transaction list with mining reward
-    public static Transactions generateTransactions(){
+    // Secondary Method to generate full random transaction list, all transactions sent to account argument with mining reward
+    public static Transactions generateTransactions(Account account){
         Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
             transactions[i] = new Transaction(Math.random() * 100, (int) (Math.random() * Account.amountOfAccounts),
-                    (int) (Math.random() * Account.amountOfAccounts));
+                    account);
         }
         // Mining reward
-        transactions[KootenayKoin.transactionsPerKoin-1] = new Transaction(KootenayKoin.miningReward, 1, -1);
+        transactions[KootenayKoin.transactionsPerKoin-1] = new Transaction(KootenayKoin.miningReward, 1, account);
         return new Transactions(transactions);
     }
 
-    public static Transactions generateValidTransactions(KootenayKoinBlockchain blockchain){
-        Transactions transactions = generateTransactions();
+    public static Transactions generateValidTransactions(Account account){
+        Transactions transactions = new Transactions();
 
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
-            transactions.setTransaction(i, Transaction.generateValidTransaction(blockchain));
+            transactions.setTransaction(i, Transaction.generateValidTransaction(account));
         }
 
         return transactions;
@@ -51,22 +51,21 @@ class Transactions {
         this.transactions[i] = transaction;
     }
 
-    public void populateAccountBalances(){
+    public void populateAccountBalances(Account account){
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++){
-            transactions[i] = new Transaction(10 , (int)(Math.random() * Account.amountOfAccounts) , -1);
+            transactions[i] = new Transaction(10. , (int)(Math.random() * Account.amountOfAccounts) , account);
         }
     }
 
-    public boolean validate(KootenayKoinBlockchain blockchain) throws InvalidTransactionException{
+    public void validate() throws  InvalidTransactionException{
         for (int i = 0; i < KootenayKoin.transactionsPerKoin-1; i++){
             try {
-                this.transactions[i].validate(blockchain);
+                this.transactions[i].validate();
             } catch(InvalidTransactionException e){
                 throw e;
             }
         }
 
-        return true;
     }
 
     public void addTransaction(Transaction transactionAdded) throws TransactionAdditionException{

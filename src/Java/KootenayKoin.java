@@ -87,7 +87,7 @@ class KootenayKoin {
             throw new InvalidKootenayKoinException("Invalid Block",
                     new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
         }
-        transactions.validate(blockchain);
+        transactions.validate();
 
         return true;
     }

@@ -1,15 +1,50 @@
 package Java;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.*;
+
+import java.security
+        .KeyPairGenerator;
+import java.security
+        .SecureRandom;
+
 public class Account {
     static int amountOfAccounts = 10;
 
     private int address;
+    private PrivateKey privateKey;
+    private  PublicKey publicKey;
+    private GenerateKeys keyGenerator;
+    private AsymmetricCryptography signatureGen;
     public static KootenayKoinBlockchain blockchain;
 
-    public Account(){}
+    public Account() {
 
-    public Account(int address){
+    }
+
+    public Account(int address) {
         this.address = address;
+
+        try {
+            this.keyGenerator = new GenerateKeys(4096);
+        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+            e.printStackTrace();
+        }
+
+        assert keyGenerator != null;
+        keyGenerator.createKeys();
+
+        this.privateKey = keyGenerator.getPrivateKey();
+        this.publicKey = keyGenerator.getPublicKey();
+
+        try {
+            this.signatureGen = new AsymmetricCryptography();
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void setActiveBlockchain(KootenayKoinBlockchain _blockchain) {
@@ -20,8 +55,17 @@ public class Account {
         return this.address;
     }
 
+    public String getSignature(){
+        try {
+            return signatureGen.encryptText(String.valueOf(address), privateKey);
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
+        return "XXXXXXXXXX";
+    }
+
     public Transaction createTransaction(double amount, int addressTo){
-        return new Transaction(amount, addressTo, this.address);
+        return new Transaction(amount, addressTo, this);
     }
 
     public double calculateBalance(){
@@ -38,5 +82,9 @@ public class Account {
             }
         }
         return balance;
+    }
+
+    public PublicKey getPublicKey() {
+        return this.publicKey;
     }
 }

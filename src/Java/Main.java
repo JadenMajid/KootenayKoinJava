@@ -12,7 +12,7 @@ public class Main{
 
         // populates accounts with random balances
         Transactions genesisTransactions = new Transactions();
-        genesisTransactions.populateAccountBalances();
+        genesisTransactions.populateAccountBalances(miner);
 
         miner.createGenesisKoin("0".repeat(Miner.DIFFICULTY) + "this too shall pass",
                 genesisTransactions,
@@ -20,24 +20,16 @@ public class Main{
 
         try {
             miner.mine(miner.getKootenayKoin());
-        } catch (NoNonceFoundException e) {
-            e.printStackTrace();
-        } catch (InvalidTransactionException e) {
-            e.printStackTrace();
-        } catch (InvalidKootenayKoinException e) {
+        } catch (NoNonceFoundException | InvalidKootenayKoinException | InvalidTransactionException e) {
             e.printStackTrace();
         }
 
 
         for (int i = 1; i < 4; i++){
-            KootenayKoin koin = new KootenayKoin(miner.getBlock(i-1).hash(), Transactions.generateValidTransactions(Account.blockchain), i, Miner.DIFFICULTY);
+            KootenayKoin koin = new KootenayKoin(miner.getBlock(i-1).hash(), Transactions.generateValidTransactions(miner), i, Miner.DIFFICULTY);
             try {
                 koin = miner.mine(koin);
-            } catch (NoNonceFoundException e) {
-                e.printStackTrace();
-            } catch (InvalidTransactionException e) {
-                e.printStackTrace();
-            } catch (InvalidKootenayKoinException e) {
+            } catch (NoNonceFoundException | InvalidKootenayKoinException | InvalidTransactionException e) {
                 e.printStackTrace();
             }
 
@@ -46,7 +38,7 @@ public class Main{
         System.out.println("Miner account Balance :" + miner.calculateBalance() + "₭");
 
         for (int i = 0; i < Account.amountOfAccounts; i++){
-            System.out.println("Account #" + i + " Balance: " + calculateBalance(i, Account.blockchain) + "₭");
+            System.out.println("Account #" + i + " Balance: " + calculateBalance(i) + "₭");
         }
     }
 }

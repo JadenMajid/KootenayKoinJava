@@ -1,7 +1,7 @@
 package Java;
 
 public class Miner extends Account{
-    public static int DIFFICULTY = 3;
+    public static int DIFFICULTY = 2;
     private KootenayKoin coin; // Current coin miner is mining
 
     public Miner(){
@@ -30,7 +30,6 @@ public class Miner extends Account{
 
         while (nonce < Integer.MAX_VALUE){
             noNonceKoin.setNonce(nonce);
-
             value = noNonceKoin.hash();
 
             if (value.substring(0,Miner.DIFFICULTY).equals("0".repeat(Miner.DIFFICULTY))){
