@@ -2,30 +2,40 @@ package Java.networking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class ClientThread extends Thread {
-    private Socket socket;
-    private PrintWriter outstream;
+public class ClientThread extends NetworkingThread {
     private BufferedReader instream;
     private InetAddress ip;
+
+    public ClientThread(Socket socket) {
+        super(socket, false);
+    }
 
     @Override
     public void run() {
         try {
-            socket = new Socket(ip.getHostAddress(), Client.PORT);
+            this.setSocket(new Socket(this.ip.getHostAddress(), Client.PORT));
         } catch (IOException e) {
             System.err.println("Unable to establish socket connection."
-                    + "(Has the IP for this thread been set?) Thread IP: " + ip.toString());
+                    + "(Has the IP for this thread been set?) Thread IP: " + this.ip.toString());
             e.printStackTrace();
         }
 
         try {
-            outstream = new PrintWriter(socket.getOutputStream(), true);
-            instream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            setIOStreams();
+
+            String receivedLine;
+            while((receivedLine = instream.readLine()) != null) { // Read new line
+                switch(receivedLine) { // Process received line
+                    case "Exit":
+                        stopConnection();
+                        break;
+                    default:
+                        System.err.println("Unprocessed message from client: " + receivedLine);
+                }
+            }
         } catch (IOException e) {
             System.err.println("Unable to establish clientside IO streams.");
             e.printStackTrace();
@@ -35,16 +45,5 @@ public class ClientThread extends Thread {
     public void startNewThreadedConnection(InetAddress ip) {
         this.ip = ip;
         this.start();
-    }
-
-    public void stopConnection() {
-        try {
-            instream.close();
-            outstream.close();
-            socket.close();
-        } catch (IOException e) {
-            System.err.println("Unable to properly close ClientThread socket/streams.");
-            e.printStackTrace();
-        }
     }
 }
