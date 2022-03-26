@@ -1,10 +1,9 @@
 package Java;
-import java.io.UnsupportedEncodingException;
+
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 
 class KootenayKoin {
     static int transactionsPerKoin = 8;
@@ -16,8 +15,8 @@ class KootenayKoin {
     private int nonce;
     private Transactions transactions;
 
-
-    public KootenayKoin(){}
+    public KootenayKoin() {
+    }
 
     // Full constructor to initalize all values
     public KootenayKoin(String previousHash, int nonce, Transactions transactions, int blockNumber, int difficulty) {
@@ -36,8 +35,8 @@ class KootenayKoin {
         this.difficulty = difficulty;
     }
 
-    public static KootenayKoin createGenesisKoin(String genesisMessage, Transactions transactions, int difficulty){
-        return new KootenayKoin(genesisMessage, 0, transactions, 0, difficulty);
+    public static void createGenesisKoin(String genesisMessage, Transactions transactions) {
+        Account.blockchain.addKoinToChain(new KootenayKoin(genesisMessage, 0, transactions, 0, 0));
     }
 
     public String getPreviousHash() {
@@ -45,7 +44,7 @@ class KootenayKoin {
     }
 
     // sets nonce
-    public void setNonce(int nonce){
+    public void setNonce(int nonce) {
         this.nonce = nonce;
     }
 
@@ -54,12 +53,12 @@ class KootenayKoin {
     }
 
     // Returns the data of the block
-    public String toString(){
+    public String toString() {
         return blockNumber + "," + difficulty + "," + previousHash + "," + nonce + "," + transactions;
     }
 
     // Hashes this coin and returns String value
-    public String hash(){
+    public String hash() {
         String value = this.toString();
         MessageDigest digest = null;
         try {
@@ -77,29 +76,38 @@ class KootenayKoin {
         return value;
     }
 
-    // Validation method to validate this block as valid, can also be accessed with a String for prev hash
+    // Validation method to validate this block as valid, can also be accessed with
+    // a String for prev hash
     public boolean validate() throws InvalidKootenayKoinException, InvalidTransactionException {
 
         String value = this.hash();
-        if (!value.substring(0, this.difficulty).equals("0".repeat(this.difficulty))){
+        if (!value.substring(0, this.difficulty).equals("0".repeat(this.difficulty))) {
             System.out.println("Invalid Block:\n" + this);
             throw new InvalidKootenayKoinException("Invalid Block",
-                    new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
+                    new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber,
+                            this.difficulty));
         }
         transactions.validate();
-
         return true;
+    }
+
+    public void setLastTransaction(Transaction transaction) {
+        this.transactions.setLastTransaction(transaction);
     }
 
     public void validate(String previousHash) throws InvalidKootenayKoinException, InvalidTransactionException {
         String value = this.hash();
-        if (value.substring(0, this.difficulty).equals("0".repeat( this.difficulty)) &&
-                this.previousHash.equals(previousHash) ){
-            throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber, this.difficulty));
+        if (value.substring(0, this.difficulty).equals("0".repeat(this.difficulty)) &&
+                this.previousHash.equals(previousHash)) {
+            throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, this.nonce,
+                    this.transactions, this.blockNumber, this.difficulty));
         }
-
         transactions.validate();
+    }
 
+    public String getPureKoin() {
+        String output = "";
+        output = hash() + "\n" + transactions.getPureTransactions();
+        return output;
     }
 }
-

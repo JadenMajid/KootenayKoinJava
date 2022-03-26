@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.util.Date;
 
 public class Transaction {
     private double amount;
@@ -14,27 +15,33 @@ public class Transaction {
     private int addressFrom;
     private String signature;
     private PublicKey publicKey;
-
+    private long timeValidated;
 
     public Transaction() {
     }
 
     // need to refactor to include signature & pubkey in constructors
     public Transaction(double amount, int addressTo, Account sender) {
+        Date date = new Date();
+
         this.amount = amount;
         this.addressTo = addressTo;
         this.addressFrom = sender.getAddress();
         this.signature = sender.getSignature();
         this.publicKey = sender.getPublicKey();
+        this.timeValidated = -1; // Set to -1 to indicate that it has not yet been validated
+
+        sender = null;
     }
 
-    public static Transaction generateValidTransaction(Account account) {
+    public static Transaction generateValidTransaction() {
         boolean found = false;
-        Transaction transaction = null;;
+        Transaction transaction = null;
 
-        while (! found){
+        while (!found) {
 
-            transaction = new Transaction(Math.random(), (int) (Math.random() * Account.amountOfAccounts), account);
+            transaction = new Transaction(Math.random(), (int) (Math.random() * Account.amountOfAccounts),
+                    Account.miningRewarder);
             try {
                 transaction.validate();
                 found = true;
@@ -45,12 +52,16 @@ public class Transaction {
         return transaction;
     }
 
+    public String generateSignatureTemplate(String senderSignature) {
+        return this.amount + " " + this.addressTo + " " + this.addressFrom + " " + senderSignature;
+    }
+
     public String getSignature() {
-        return signature;
+        return this.signature;
     }
 
     public PublicKey getPublicKey() {
-        return publicKey;
+        return this.publicKey;
     }
 
     public double getAmount() {
@@ -65,13 +76,22 @@ public class Transaction {
         return this.addressFrom;
     }
 
+    public long getTimeValidated() {
+        return this.timeValidated;
+    }
 
     public String toString() {
-        return " " + amount + " " + addressFrom + " " + signature + " " + publicKey + " " + addressTo;
+        return " " + this.amount + " " + this.addressFrom + " " + this.signature + " " + this.publicKey + " "
+                + this.addressTo + " " + this.timeValidated;
+    }
+
+    private void updateTimeValidated() {
+        Date date = new Date();
+        this.timeValidated = date.getTime();
     }
 
     // Need to validate signatures in KootenayKoin class
-    public void validate() throws InvalidTransactionException{
+    public void validate() throws InvalidTransactionException {
         AsymmetricCryptography decoder = null;
         try {
             decoder = new AsymmetricCryptography();
@@ -79,20 +99,37 @@ public class Transaction {
             e.printStackTrace();
         }
 
-        if (KootenayKoinBlockchain.calculateBalance(addressFrom) < amount){
-            System.out.println(addressFrom + ": Current balance: " + KootenayKoinBlockchain.calculateBalance(addressFrom) + " -> Send amount: " + amount + "\n");
+        try { // check if coming from
+            if (this.addressFrom == -1 &&
+                    decoder.decryptText(this.signature, this.publicKey).substring(0, 2).equals("-1")) {
+                return;
+            }
+        } catch (InvalidKeyException | UnsupportedEncodingException | IllegalBlockSizeException
+                | BadPaddingException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        // calculates if sender has enough
+        if (KootenayKoinBlockchain.calculateBalance(addressFrom) < amount) {
+            System.out.println(addressFrom + ": Current balance: "
+                    + KootenayKoinBlockchain.calculateBalance(addressFrom) + " -> Send amount: " + amount + "\n");
             throw new InvalidTransactionException(this.toString());
         }
 
+        // calculates if this signature matches the addressFrom and time is right
         try {
-            if (decoder.decryptText(this.signature ,this.publicKey).equals(String.valueOf(addressFrom))){
-                return; // this is just a temporary fix to allow for accounts to have balance added without validation
-            }           // although -1 would be a convenient option for mining reward
-        } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException | UnsupportedEncodingException e) {
+            if (!decoder.decryptText(this.signature, this.publicKey)
+                    .equals(String.valueOf(this.addressFrom + " " + timeValidated))) {
+                throw new InvalidTransactionException(this.toString());
+            }
+        } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException
+                | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
 
-        throw new InvalidTransactionException(this.toString());
+    public String getPureTransaction() {
+        return "" + amount + " " + addressTo + " " + addressFrom;
     }
 }
-

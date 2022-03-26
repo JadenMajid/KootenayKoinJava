@@ -4,29 +4,36 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
-import java.security.*;
-
-import java.security.KeyPairGenerator;
-import java.security.SecureRandom;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.Date;
 import java.util.LinkedList;
 
 public class Account {
     static int amountOfAccounts = 10;
     static KootenayKoinBlockchain blockchain;
     static LinkedList<Account> accounts;
-    static Account miningReward;
-
+    static Account miningRewarder;
 
     private int address;
     private PrivateKey privateKey;
-    private  PublicKey publicKey;
+    private PublicKey publicKey;
     private GenerateKeys keyGenerator;
     private AsymmetricCryptography signatureGen;
 
-
     static { // initializes list of accounts could use this to initalize them
+        // init static stuff
         accounts = new LinkedList<Account>();
-        miningReward = new Account(-1);
+        miningRewarder = new Account(-1);
+        accounts.add(miningRewarder);
+        for (int i = 0; i < amountOfAccounts; i++) {
+            accounts.add(new Account(i));
+        }
+
+        System.out.println(Account.accounts.get(0));
     }
 
     public Account() {
@@ -34,8 +41,8 @@ public class Account {
     }
 
     public Account(int address) {
-        this.address = address;
 
+        this.address = address;
         try {
             this.keyGenerator = new GenerateKeys(4096);
         } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
@@ -47,12 +54,38 @@ public class Account {
 
         this.privateKey = keyGenerator.getPrivateKey();
         this.publicKey = keyGenerator.getPublicKey();
+        // System.out.println("========PUBLIC KEY======\n" + publicKey);// lmfao
 
         try {
             this.signatureGen = new AsymmetricCryptography();
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
+    }
+
+    public String encryptText(String input) {
+        AsymmetricCryptography decoder = null;
+        try {
+            decoder = new AsymmetricCryptography();
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            e.printStackTrace();
+        }
+
+        String temp = "";
+        System.out.println(input.length());
+        try {
+            temp = decoder.encryptText(input, this.privateKey);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | UnsupportedEncodingException
+                | IllegalBlockSizeException | BadPaddingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return temp;
+    }
+
+    public String toString() {
+        return "Account Address: " + address;
     }
 
     public static void setActiveBlockchain(KootenayKoinBlockchain _blockchain) {
@@ -63,26 +96,28 @@ public class Account {
         return this.address;
     }
 
-    public String getSignature(){
+    public String getSignature() {
+        Date date = new Date();
         try {
-            return signatureGen.encryptText(String.valueOf(address), privateKey);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException e) {
+            return signatureGen.encryptText(String.valueOf(address) + date.getTime(), privateKey);
+        } catch (NoSuchAlgorithmException | InvalidKeyException | NoSuchPaddingException | UnsupportedEncodingException
+                | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
         }
-        return "XXXXXXXXXX";
+        return "";
     }
 
-    public Transaction createTransaction(double amount, int addressTo){
+    public Transaction createTransaction(double amount, int addressTo) {
         return new Transaction(amount, addressTo, this);
     }
 
-    public double calculateBalance(){
+    public double calculateBalance() {
 
         double balance = 0;
 
-        for (KootenayKoin koin: KootenayKoinBlockchain.getBlockchain()) {
+        for (KootenayKoin koin : KootenayKoinBlockchain.getBlockchain()) {
             Transactions transactions = koin.getTransactions();
-            for (int i = 0; i< KootenayKoin.transactionsPerKoin; i++) {
+            for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++) {
                 if (transactions.getTransaction(i).getAddressFrom() == this.address) {
                     balance -= transactions.getTransaction(i).getAmount();
                 } else if (transactions.getTransaction(i).getAddressTo() == this.address) {
