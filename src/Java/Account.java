@@ -114,7 +114,7 @@ public class Account {
     public double calculateBalance() {
 
         double balance = 0;
-
+        
         for (KootenayKoin koin : KootenayKoinBlockchain.getBlockchain()) {
             Transactions transactions = koin.getTransactions();
             for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++) {
