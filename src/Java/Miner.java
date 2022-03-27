@@ -1,7 +1,7 @@
 package Java;
 
 public class Miner extends Account {
-    public static int DIFFICULTY = 2;
+    public static int DIFFICULTY = 5;
     private KootenayKoin coin; // Current coin miner is mining
 
     public Miner() {

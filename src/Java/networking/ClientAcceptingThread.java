@@ -49,7 +49,7 @@ class ClientAcceptingThread extends Thread {
             this.clientSocket.close();
             this.serverSocket.close();
         } catch (IOException e) {
-            System.err.println("Unable to properly close ClientAcceptingThread socekts.");
+            System.err.println("Unable to properly close ClientAcceptingThread sockets.");
         }
     }
 }

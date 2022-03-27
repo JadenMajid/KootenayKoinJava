@@ -18,9 +18,8 @@ public class KootenayKoinBlockchain {
             if (koin.validate() || koin.getBlockNumber() != 0){
                 blockchain.addLast(koin);
                 System.out.println(
-                        "\n==========MINTED COIN==========\n" +
-                                koin.getPureKoin() +
-                                "\n===============================\n");
+                        "==========MINTED COIN==========\n" +
+                                koin.getPureKoin());
             }
         } catch(InvalidKootenayKoinException e) {
             System.out.println("Invalid Kootenay Koin detected: \n" + koin);

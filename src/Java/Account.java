@@ -32,12 +32,9 @@ public class Account {
         for (int i = 0; i < amountOfAccounts; i++) {
             accounts.add(new Account(i));
         }
-
-        System.out.println(Account.accounts.get(0));
     }
 
     public Account() {
-
     }
 
     public Account(int address) {
@@ -54,7 +51,6 @@ public class Account {
 
         this.privateKey = keyGenerator.getPrivateKey();
         this.publicKey = keyGenerator.getPublicKey();
-        // System.out.println("========PUBLIC KEY======\n" + publicKey);// lmfao
 
         try {
             this.signatureGen = new AsymmetricCryptography();
