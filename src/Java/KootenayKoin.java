@@ -35,12 +35,16 @@ class KootenayKoin {
         this.difficulty = difficulty;
     }
 
-    public static void createGenesisKoin(String genesisMessage, Transactions transactions) {
-        Account.blockchain.addKoinToChain(new KootenayKoin(genesisMessage, 0, transactions, 0, 0));
+    public static KootenayKoin createGenesisKoin(String genesisMessage, Transactions transactions) {
+        return new KootenayKoin(genesisMessage, 0, transactions, 0, 0);
     }
 
     public String getPreviousHash() {
         return this.previousHash;
+    }
+
+    public int getBlockNumber() {
+        return blockNumber;
     }
 
     // sets nonce
@@ -72,7 +76,6 @@ class KootenayKoin {
             digest.update(value.getBytes(StandardCharsets.UTF_8));
             value = String.format("%040x", new BigInteger(1, digest.digest()));
         }
-
         return value;
     }
 
@@ -107,7 +110,7 @@ class KootenayKoin {
 
     public String getPureKoin() {
         String output = "";
-        output = hash() + "\n" + transactions.getPureTransactions();
+        output = "Hash: " + hash() + "\nNonce: " + nonce + "\nBlock #: " + blockNumber + "\nPrevious Hash: " + previousHash + "\nTransactions:\n"  + transactions.getPureTransactions();
         return output;
     }
 }

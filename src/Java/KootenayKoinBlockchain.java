@@ -15,8 +15,12 @@ public class KootenayKoinBlockchain {
     // Adds Koin to current blockchain
     public void addKoinToChain(KootenayKoin koin){
         try {
-            if (koin.validate()){
-                blockchain.add(koin);
+            if (koin.validate() || koin.getBlockNumber() != 0){
+                blockchain.addLast(koin);
+                System.out.println(
+                        "\n==========MINTED COIN==========\n" +
+                                koin.getPureKoin() +
+                                "\n===============================\n");
             }
         } catch(InvalidKootenayKoinException e) {
             System.out.println("Invalid Kootenay Koin detected: \n" + koin);

@@ -9,19 +9,24 @@ public class Main {
 
         Miner miner = new Miner(1);
 
-        KootenayKoin temporaryCoin = new KootenayKoin();
-
         // populates accounts with random balances
         Transactions temporaryTransactions = new Transactions();
         temporaryTransactions.populateAccountBalances();
 
-        miner.createGenesisKoin("Let there be Light", temporaryTransactions);
+        miner.setKootenayKoin(KootenayKoin.createGenesisKoin("Let there be Light", temporaryTransactions));
+        try {
+            miner.mine(miner.getKootenayKoin());
+        } catch (NoNonceFoundException | InvalidTransactionException | InvalidKootenayKoinException e) {
+            e.printStackTrace();
+        }
+
 
         for (int i = 0; i < 4; i++) {
-            temporaryTransactions.generateValidTransactions();
+            temporaryTransactions = new Transactions().generateValidTransactions();
+            KootenayKoin previousKoin = blockchain.get(i);
 
-            KootenayKoin koin = new KootenayKoin(blockchain.get(i).hash(),
-                    temporaryTransactions, i + 1, Miner.DIFFICULTY);
+            KootenayKoin koin = new KootenayKoin(previousKoin.hash(),
+                    temporaryTransactions, i+1, Miner.DIFFICULTY);
             try {
                 miner.mine(koin);
             } catch (NoNonceFoundException | InvalidKootenayKoinException | InvalidTransactionException e) {

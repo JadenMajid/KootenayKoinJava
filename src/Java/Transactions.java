@@ -49,11 +49,13 @@ class Transactions {
     }
 
     public String getPureTransactions() {
-        String output = "";
+        StringBuilder output = new StringBuilder();
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++) {
-            output += transactions[i].getPureTransaction() + "\n";
+            if (transactions[i]!= null) {
+                output.append(transactions[i].getPureTransaction()).append("\n");
+            }
         }
-        return output;
+        return output.toString();
     }
 
     public void setTransaction(int i, Transaction transaction) {

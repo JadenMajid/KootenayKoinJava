@@ -1,11 +1,11 @@
 package Java.networking;
-/*
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
+/*
  * TO-DO:
  * - Share connected clients with connections (so that the network propagates through each new connection)
  * - Program ClientThreadFactory.java (needs to create new clients for each new possible connection and connect them)
@@ -22,22 +22,22 @@ class ClientAcceptingThread extends Thread {
             this.serverSocket = new ServerSocket(Client.PORT);
 
             Client.connectedAddresses.add(InetAddress.getLocalHost());
-        } catch(IOException e) {
+        } catch (IOException e) {
             System.err.println("Unable to start ServerSocket on port " + Client.PORT);
             e.printStackTrace();
         }
 
-        while(true) {
+        while (true) {
             try {
                 this.clientSocket = this.serverSocket.accept();
 
                 // Debug
                 System.out.println("New client connected: " + this.clientSocket);
-    
+
                 Thread t = new Thread(new ServerThread(this.clientSocket));
 
                 t.start();
-            } catch(IOException e) {
+            } catch (IOException e) {
                 System.err.println("Unable to accept incoming connection to ServerThread.");
                 e.printStackTrace();
             }
@@ -52,4 +52,4 @@ class ClientAcceptingThread extends Thread {
             System.err.println("Unable to properly close ClientAcceptingThread socekts.");
         }
     }
-}*/
+}
