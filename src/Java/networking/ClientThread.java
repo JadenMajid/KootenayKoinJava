@@ -8,8 +8,8 @@ public class ClientThread extends NetworkingThread {
     private BufferedReader instream;
     private String ip;
 
-    public ClientThread(Socket socket) {
-        super(socket, false);
+    public ClientThread(String ip) {
+        this.ip = ip;
     }
 
     @Override
@@ -28,11 +28,11 @@ public class ClientThread extends NetworkingThread {
             String receivedLine;
             while((receivedLine = instream.readLine()) != null) { // Read new line
                 switch(receivedLine) { // Process received line
-                    case "Exit":
+                    case Hub.NETExit:
                         stopConnection();
-                        break;
-                    case "NewConnection":
-                        Hub.mainServer.broadcastNewConnection(instream.readLine());
+                        return; // Stop running
+                    case Hub.NETNewConnection:
+                        Hub.mainServer.newConnection(instream.readLine());
                         break;
                     default:
                         System.err.println("Unprocessed message from client: " + receivedLine);
@@ -42,10 +42,5 @@ public class ClientThread extends NetworkingThread {
             System.err.println("Unable to establish clientside IO streams.");
             e.printStackTrace();
         }
-    }
-
-    public void startNewThreadedConnection(String ip) {
-        this.ip = ip;
-        this.start();
     }
 }

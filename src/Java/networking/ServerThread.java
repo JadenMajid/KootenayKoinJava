@@ -11,7 +11,7 @@ public class ServerThread extends NetworkingThread {
     private PrintWriter outstream;
 
     public ServerThread(Socket socket) {
-        super(socket, true);
+        super(socket);
     }
 
     @Override
@@ -20,11 +20,12 @@ public class ServerThread extends NetworkingThread {
         try {
             while((receivedLine = instream.readLine()) != null) { // Read new line
                 switch(receivedLine) { // Process received line
-                    case "Exit":
+                    case Hub.NETExit:
                         stopConnection();
-                        break;
-                    case "NewConnection":
-                        Hub.mainServer.broadcastNewConnection(instream.readLine());
+                        Hub.mainServer.removeServerThread(this);
+                        return; // Stop running
+                    case Hub.NETNewConnection:
+                        Hub.mainServer.newConnection(instream.readLine());
                         break;
                     default:
                         System.err.println("Unprocessed message from client: " + receivedLine);

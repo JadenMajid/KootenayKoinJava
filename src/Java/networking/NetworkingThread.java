@@ -15,20 +15,24 @@ public class NetworkingThread extends Thread {
     private BufferedReader instream;
     private boolean connected;
 
-    public NetworkingThread(Socket clientSocket, boolean isServer) {
+    // For ClientThreads
+    public NetworkingThread() {
+        this.connected = false;
+    }
+
+    // For ServerThreads
+    public NetworkingThread(Socket clientSocket) {
         this.socket = clientSocket;
         this.connected = false;
 
-		if (isServer) {
-			try {
-				this.instream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-				this.outstream = new PrintWriter(this.socket.getOutputStream(), true);
+		try {
+			this.instream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+			this.outstream = new PrintWriter(this.socket.getOutputStream(), true);
 
-				this.connected = true;
-			} catch (IOException e) {
-				System.err.println("Unable to establish client IO streams.");
-				e.printStackTrace();
-			}
+			this.connected = true;
+		} catch (IOException e) {
+			System.err.println("Unable to establish client IO streams.");
+			e.printStackTrace();
 		}
     }
 
