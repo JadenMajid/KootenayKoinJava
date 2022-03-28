@@ -26,7 +26,7 @@ public class Account {
 
     static { // initializes list of accounts could use this to initalize them
         // init static stuff
-        accounts = new LinkedList<Account>();
+        accounts = new LinkedList<>();
         miningRewarder = new Account(-1);
         accounts.add(miningRewarder);
         for (int i = 0; i < amountOfAccounts; i++) {
@@ -70,7 +70,9 @@ public class Account {
         String temp = "";
         System.out.println(input.length());
         try {
-            temp = decoder.encryptText(input, this.privateKey);
+            if (decoder != null) {
+                temp = decoder.encryptText(input, this.privateKey);
+            }
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | UnsupportedEncodingException
                 | IllegalBlockSizeException | BadPaddingException e) {
             // TODO Auto-generated catch block
