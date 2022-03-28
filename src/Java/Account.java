@@ -73,7 +73,6 @@ public class Account {
             temp = decoder.encryptText(input, this.privateKey);
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | UnsupportedEncodingException
                 | IllegalBlockSizeException | BadPaddingException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

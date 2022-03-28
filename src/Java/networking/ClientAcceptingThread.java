@@ -1,28 +1,20 @@
 package Java.networking;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
-/*
- * TO-DO:
- * - Program ClientThreadFactory.java (needs to create new clients for each new possible connection and connect them)
- * - Implement blockchain validation through the network
- */
-
 class ClientAcceptingThread extends Thread {
     private ServerSocket serverSocket;
     private Socket clientSocket;
-    private LinkedList<ServerThread> clientThreads;
+    private LinkedList<ServerThread> serverThreads;
+    private LinkedList<ClientThread> clientThreads;
 
     @Override
     public void run() {
         try {
             this.serverSocket = new ServerSocket(Hub.PORT);
-
-            Hub.connectedAddresses.add(InetAddress.getLocalHost());
         } catch (IOException e) {
             System.err.println("Unable to start ServerSocket on port " + Hub.PORT);
             e.printStackTrace();
@@ -35,11 +27,10 @@ class ClientAcceptingThread extends Thread {
                 // Debug
                 System.out.println("New client connected: " + this.clientSocket);
 
-                ServerThread t = new ServerThread(this.clientSocket);
-                this.clientThreads.add(t);
-                this.clientThreads.getLast().start(); // Start the new server thread
+                this.serverThreads.add(new ServerThread(this.clientSocket));
+                this.serverThreads.getLast().start(); // Start the new server thread
 
-                this.broadcastNewConnection(this.clientThreads.getLast().getConnectedIP());
+                this.newConnection(this.serverThreads.getLast().getConnectedIP());
             } catch (IOException e) {
                 System.err.println("Unable to accept incoming connection to ServerThread.");
                 e.printStackTrace();
@@ -47,17 +38,24 @@ class ClientAcceptingThread extends Thread {
         }
     }
 
-    public void broadcastNewConnection(String ip) {
-        boolean alreadyConnected = false;
+    public void removeServerThread(ServerThread t) {
+        this.serverThreads.remove(t);
+    }
 
-        for (ServerThread clientHandler : Hub.mainServer.clientThreads) {
+    public void newConnection(String ip) {
+        if (ip.equals(Hub.localhostIP))
+            return; // ip is our own ip, no need to broadcast
+
+        for (ServerThread clientHandler : Hub.mainServer.serverThreads) {
             if (clientHandler.getConnectedIP().equals(ip))
-                alreadyConnected = true;
-            else // Avoid creating duplicate connections
-                clientHandler.sendMessage("NewConnection\n" + ip); // The newline splits the message into two lines for interpretation by the client
+                return; // Avoid creating duplicate connections
+            
+            // Alert all connected addresses of the new ip
+            clientHandler.sendMessage("NewConnection\n" + ip); // The newline splits the message into two lines for interpretation by the client
 
-            if (!alreadyConnected)
-                continue; // TODO: Create new connection
+            // Create our own connection to the new address
+            this.clientThreads.add(new ClientThread(ip));
+            this.clientThreads.getLast().start(); // Start the new client thread
         }
     }
 

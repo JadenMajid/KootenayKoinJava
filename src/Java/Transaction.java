@@ -22,8 +22,6 @@ public class Transaction {
 
     // need to refactor to include signature & pubkey in constructors
     public Transaction(double amount, int addressTo, Account sender) {
-        Date date = new Date();
-
         this.amount = amount;
         this.addressTo = addressTo;
         this.addressFrom = sender.getAddress();
@@ -104,7 +102,6 @@ public class Transaction {
             }
         } catch (InvalidKeyException | UnsupportedEncodingException | IllegalBlockSizeException
                 | BadPaddingException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
