@@ -23,6 +23,9 @@ public class ServerThread extends NetworkingThread {
                     case "Exit":
                         stopConnection();
                         break;
+                    case "NewConnection":
+                        Hub.mainServer.broadcastNewConnection(instream.readLine());
+                        break;
                     default:
                         System.err.println("Unprocessed message from client: " + receivedLine);
                 }
@@ -33,6 +36,10 @@ public class ServerThread extends NetworkingThread {
         } finally {
             stopConnection();
         }
+    }
+
+    public String getConnectedIP() {
+        return this.clientSocket.getInetAddress().getHostAddress();
     }
 
     public void stopConnection() {

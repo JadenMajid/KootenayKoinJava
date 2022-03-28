@@ -2,12 +2,11 @@ package Java.networking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.Socket;
 
 public class ClientThread extends NetworkingThread {
     private BufferedReader instream;
-    private InetAddress ip;
+    private String ip;
 
     public ClientThread(Socket socket) {
         super(socket, false);
@@ -16,10 +15,10 @@ public class ClientThread extends NetworkingThread {
     @Override
     public void run() {
         try {
-            this.setSocket(new Socket(this.ip.getHostAddress(), Client.PORT));
+            this.setSocket(new Socket(this.ip, Hub.PORT));
         } catch (IOException e) {
             System.err.println("Unable to establish socket connection."
-                    + "(Has the IP for this thread been set?) Thread IP: " + this.ip.toString());
+                    + "(Has the IP for this thread been set?) Thread IP: " + this.ip);
             e.printStackTrace();
         }
 
@@ -32,6 +31,9 @@ public class ClientThread extends NetworkingThread {
                     case "Exit":
                         stopConnection();
                         break;
+                    case "NewConnection":
+                        Hub.mainServer.broadcastNewConnection(instream.readLine());
+                        break;
                     default:
                         System.err.println("Unprocessed message from client: " + receivedLine);
                 }
@@ -42,7 +44,7 @@ public class ClientThread extends NetworkingThread {
         }
     }
 
-    public void startNewThreadedConnection(InetAddress ip) {
+    public void startNewThreadedConnection(String ip) {
         this.ip = ip;
         this.start();
     }
