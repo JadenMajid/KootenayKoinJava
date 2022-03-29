@@ -1,8 +1,11 @@
 package Java;
 
 import java.util.LinkedList;
-
+/**
+The KootenayKoinBlockchain is the blockchain that all mined KootenayKoins are added to
+ */
 public class KootenayKoinBlockchain {
+
     static LinkedList<KootenayKoin> blockchain;
 
     public KootenayKoinBlockchain(){

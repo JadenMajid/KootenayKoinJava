@@ -8,8 +8,11 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.util.Date;
-
+/**
+Transactions are individual transactions that can be added to Transactions
+ */
 public class Transaction {
+
     private double amount;
     private int addressTo;
     private int addressFrom;

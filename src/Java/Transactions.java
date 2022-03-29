@@ -1,6 +1,10 @@
 package Java;
 
+/**
+Transactions are a container class for an array of Transaction. They hold Transaction and methods.
+ */
 class Transactions {
+
     private Transaction[] transactions;
 
     Transactions() {

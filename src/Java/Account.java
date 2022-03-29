@@ -11,8 +11,11 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Date;
 import java.util.LinkedList;
-
+/**
+Accounts are individual accounts that can send or be sent KootenayKoins
+ */
 public class Account {
+
     static int amountOfAccounts = 10;
     static KootenayKoinBlockchain blockchain;
     static LinkedList<Account> accounts;

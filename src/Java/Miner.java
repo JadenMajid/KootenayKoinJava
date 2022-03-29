@@ -1,8 +1,12 @@
 package Java;
 
 import java.util.LinkedList;
-
+/**
+Miners are an extension of the Account class that can mine for KootenayKoins, and reward themselves KootenayKoins
+for successfully mining blocks
+ */
 public class Miner extends Account {
+
     public static int DIFFICULTY = 3;
     private KootenayKoin coin; // Current coin miner is mining
     private LinkedList<Transaction> transactionPool;

@@ -4,8 +4,11 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
+/**
+KootenayKoins are individual blocks that can be added to the KootenayKoinBlockchain
+ */
 class KootenayKoin {
+
     static int transactionsPerKoin = 8;
     static double miningReward = 10;
 
