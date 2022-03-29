@@ -73,7 +73,9 @@ public class Account {
         String temp = "";
         System.out.println(input.length());
         try {
-            temp = decoder.encryptText(input, this.privateKey);
+            if (decoder != null) {
+                temp = decoder.encryptText(input, this.privateKey);
+            }
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | UnsupportedEncodingException
                 | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
