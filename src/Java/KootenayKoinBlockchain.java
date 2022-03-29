@@ -26,8 +26,6 @@ public class KootenayKoinBlockchain {
             }
         } catch(InvalidKootenayKoinException e) {
             System.out.println("Invalid Kootenay Koin detected: \n" + koin);
-        } catch(InvalidTransactionException e){
-            System.out.println("Invalid Transaction detected: \n" + koin.getTransactions());
         }
     }
 
@@ -55,11 +53,7 @@ public class KootenayKoinBlockchain {
     // Validates blockchain
     public boolean validate() throws InvalidKootenayKoinException {
         // checks genesis block
-        try {
-            blockchain.get(0).validate();
-        } catch(InvalidTransactionException e){
-            System.out.println("Invalid Transaction detected: \n" + e);
-        }
+        blockchain.get(0).validate();
         //
         for (int i = 1; i < blockchain.size(); i++){
             try {

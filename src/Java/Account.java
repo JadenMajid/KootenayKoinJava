@@ -29,7 +29,7 @@ public class Account {
 
     static { // initializes list of accounts could use this to initalize them
         // init static stuff
-        accounts = new LinkedList<>();
+        accounts = new LinkedList<Account>();
         miningRewarder = new Account(-1);
         accounts.add(miningRewarder);
         for (int i = 0; i < amountOfAccounts; i++) {
