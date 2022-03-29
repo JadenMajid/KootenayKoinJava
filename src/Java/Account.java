@@ -11,8 +11,11 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Date;
 import java.util.LinkedList;
-
+/**
+Accounts are individual accounts that can send or be sent KootenayKoins
+ */
 public class Account {
+
     static int amountOfAccounts = 10;
     static KootenayKoinBlockchain blockchain;
     static LinkedList<Account> accounts;
@@ -26,7 +29,7 @@ public class Account {
 
     static { // initializes list of accounts could use this to initalize them
         // init static stuff
-        accounts = new LinkedList<>();
+        accounts = new LinkedList<Account>();
         miningRewarder = new Account(-1);
         accounts.add(miningRewarder);
         for (int i = 0; i < amountOfAccounts; i++) {
@@ -82,7 +85,7 @@ public class Account {
     }
 
     public String toString() {
-        return "Account Address: " + address;
+        return String.valueOf(address);
     }
 
     public static void setActiveBlockchain(KootenayKoinBlockchain _blockchain) {
