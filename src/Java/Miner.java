@@ -1,8 +1,11 @@
 package Java;
 
+import java.util.LinkedList;
+
 public class Miner extends Account {
-    public static int DIFFICULTY = 5;
+    public static int DIFFICULTY = 3;
     private KootenayKoin coin; // Current coin miner is mining
+    private LinkedList<Transaction> transactionPool;
 
     public Miner() {
         this.coin = null;
@@ -16,6 +19,14 @@ public class Miner extends Account {
     public KootenayKoin getBlock(int i) {
         return blockchain.getBlock(i);
     }
+
+    public void addTransactionToTransactionPool(Transaction transaction) throws InvalidTransactionException {
+        if (transaction.validate()){
+            transactionPool.add(transaction);
+        }
+    }
+
+
 
     public void makeKootenayKoin() { // Set method for Miner.coin
         this.coin = new KootenayKoin(blockchain.getBlock(KootenayKoinBlockchain.getSize()).hash(),

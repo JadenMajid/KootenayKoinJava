@@ -80,7 +80,7 @@ public class Account {
     }
 
     public String toString() {
-        return "Account Address: " + address;
+        return String.valueOf(address);
     }
 
     public static void setActiveBlockchain(KootenayKoinBlockchain _blockchain) {

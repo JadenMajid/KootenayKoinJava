@@ -87,22 +87,24 @@ public class Transaction {
     }
 
     // Need to validate signatures in KootenayKoin class
-    public void validate() throws InvalidTransactionException {
+    public boolean validate() throws InvalidTransactionException {
         AsymmetricCryptography decoder = null;
         try {
             decoder = new AsymmetricCryptography();
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
+            return false;
         }
 
         try { // check if coming from
             if (this.addressFrom == -1 &&
                     decoder.decryptText(this.signature, this.publicKey).substring(0, 2).equals("-1")) {
-                return;
+                return false;
             }
         } catch (InvalidKeyException | UnsupportedEncodingException | IllegalBlockSizeException
                 | BadPaddingException e1) {
             e1.printStackTrace();
+            return false;
         }
 
         // calculates if sender has enough
@@ -121,7 +123,9 @@ public class Transaction {
         } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException
                 | UnsupportedEncodingException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     public String getPureTransaction() {

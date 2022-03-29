@@ -15,30 +15,6 @@ class Transactions {
         return transactions[i];
     }
 
-    // Method to populate transaction list with starting index onwards changed only
-    public static Transactions generateTransactions(int startIndex, Account account) {
-        Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
-        for (int i = startIndex; i < KootenayKoin.transactionsPerKoin - 1; i++) {
-            transactions[i] = new Transaction(Math.random() * 10, (int) (Math.random() * 100), account);
-        }
-        // Mining reward
-        transactions[KootenayKoin.transactionsPerKoin - 1] = new Transaction(100., 1, Account.miningRewarder);
-        return new Transactions(transactions);
-    }
-
-    // Secondary Method to generate full random transaction list, all transactions
-    // sent to account argument with mining reward
-    public static Transactions generateTransactions(Account account) {
-        Transaction[] transactions = new Transaction[KootenayKoin.transactionsPerKoin];
-        for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++) {
-            transactions[i] = new Transaction(Math.random() * 100, (int) (Math.random() * Account.amountOfAccounts),
-                    account);
-        }
-        // Mining reward
-        transactions[KootenayKoin.transactionsPerKoin - 1] = new Transaction(KootenayKoin.miningReward, 1,
-                Account.accounts.get(0));
-        return new Transactions(transactions);
-    }
 
     public Transactions generateValidTransactions() {
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++) {
@@ -64,8 +40,8 @@ class Transactions {
 
     public void populateAccountBalances() {
         for (int i = 0; i < KootenayKoin.transactionsPerKoin - 1; i++) {
-            transactions[i] = new Transaction(10., (int) (Math.random() * Account.amountOfAccounts),
-                    Account.accounts.get(0));
+            transactions[i] = new Transaction(KootenayKoin.miningReward, (int) (Math.random() * Account.amountOfAccounts),
+                    Account.miningRewarder);
         }
     }
 
