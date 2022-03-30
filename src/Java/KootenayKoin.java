@@ -43,7 +43,7 @@ class KootenayKoin {
     }
 
     public String getPreviousHash() {
-        return this.previousHash;
+        return previousHash;
     }
 
     public int getBlockNumber() {
@@ -56,7 +56,7 @@ class KootenayKoin {
     }
 
     public Transactions getTransactions() {
-        return this.transactions;
+        return transactions;
     }
 
     // Returns the data of the block
@@ -86,12 +86,11 @@ class KootenayKoin {
     // a String for prev hash
     public boolean validate() throws InvalidKootenayKoinException {
 
-        String value = this.hash();
-        if (!value.substring(0, this.difficulty).equals("0".repeat(this.difficulty))) {
+        String value = hash();
+        if (!value.substring(0, difficulty).equals("0".repeat(difficulty))) {
             System.out.println("Invalid Block:\n" + this);
             throw new InvalidKootenayKoinException("Invalid Block",
-                    new KootenayKoin(this.previousHash, this.nonce, this.transactions, this.blockNumber,
-                            this.difficulty));
+                    new KootenayKoin(previousHash, nonce, transactions, blockNumber, difficulty));
         }
         
         try {
@@ -105,15 +104,14 @@ class KootenayKoin {
     }
 
     public void setLastTransaction(Transaction transaction) {
-        this.transactions.setLastTransaction(transaction);
+        transactions.setLastTransaction(transaction);
     }
 
     public void validate(String previousHash) throws InvalidKootenayKoinException, InvalidTransactionException {
         String value = this.hash();
-        if (value.substring(0, this.difficulty).equals("0".repeat(this.difficulty)) &&
+        if (value.substring(0, difficulty).equals("0".repeat(difficulty)) &&
                 this.previousHash.equals(previousHash)) {
-            throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, this.nonce,
-                    this.transactions, this.blockNumber, this.difficulty));
+            throw new InvalidKootenayKoinException("Invalid Block", new KootenayKoin(this.previousHash, nonce, transactions, blockNumber, difficulty));
         }
         transactions.validate();
     }

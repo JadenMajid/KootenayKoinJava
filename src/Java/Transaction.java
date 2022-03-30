@@ -27,10 +27,10 @@ public class Transaction {
     public Transaction(double amount, int addressTo, Account sender) {
         this.amount = amount;
         this.addressTo = addressTo;
-        this.addressFrom = sender.getAddress();
-        this.signature = sender.getSignature();
-        this.publicKey = sender.getPublicKey();
-        this.timeValidated = -1; // Set to -1 to indicate that it has not yet been validated
+        addressFrom = sender.getAddress();
+        signature = sender.getSignature();
+        publicKey = sender.getPublicKey();
+        timeValidated = -1; // Set to -1 to indicate that it has not yet been validated
     }
 
     public static Transaction generateValidTransaction() {
@@ -52,41 +52,42 @@ public class Transaction {
     }
 
     public String generateSignatureTemplate(String senderSignature) {
-        return this.amount + " " + this.addressTo + " " + this.addressFrom + " " + senderSignature;
+        return amount + " " + addressTo + " " + addressFrom + " " + senderSignature;
     }
 
     public String getSignature() {
-        return this.signature;
+        return signature;
     }
 
     public PublicKey getPublicKey() {
-        return this.publicKey;
+        return publicKey;
     }
 
     public double getAmount() {
-        return this.amount;
+        return amount;
     }
 
     public int getAddressTo() {
-        return this.addressTo;
+        return addressTo;
     }
 
     public int getAddressFrom() {
-        return this.addressFrom;
+        return addressFrom;
     }
 
     public long getTimeValidated() {
-        return this.timeValidated;
+        return timeValidated;
     }
 
     public String toString() {
-        return " " + this.amount + " " + this.addressFrom + " " + this.signature + " " + this.publicKey + " "
-                + this.addressTo + " " + this.timeValidated;
+        return " " + amount + " " + addressFrom + " " + signature + " " + publicKey + " "
+                + addressTo + " " + timeValidated;
     }
 
+    @SuppressWarnings("unused")
     private void updateTimeValidated() {
         Date date = new Date();
-        this.timeValidated = date.getTime();
+        timeValidated = date.getTime();
     }
 
     // Need to validate signatures in KootenayKoin class
@@ -100,8 +101,8 @@ public class Transaction {
         }
 
         try { // check if coming from
-            if (this.addressFrom == -1 &&
-                    decoder.decryptText(this.signature, this.publicKey).substring(0, 2).equals("-1")) {
+            if (addressFrom == -1 &&
+                    decoder.decryptText(signature, publicKey).substring(0, 2).equals("-1")) {
                 return false;
             }
         } catch (InvalidKeyException | UnsupportedEncodingException | IllegalBlockSizeException
@@ -119,8 +120,8 @@ public class Transaction {
 
         // calculates if this signature matches the addressFrom and time is right
         try {
-            if (!decoder.decryptText(this.signature, this.publicKey)
-                    .equals(String.valueOf(this.addressFrom + " " + timeValidated))) {
+            if (!decoder.decryptText(signature, publicKey)
+                    .equals(String.valueOf(addressFrom + " " + timeValidated))) {
                 throw new InvalidTransactionException(this.toString());
             }
         } catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException

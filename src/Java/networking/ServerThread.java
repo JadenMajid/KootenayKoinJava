@@ -40,20 +40,20 @@ public class ServerThread extends NetworkingThread {
     }
 
     public String getConnectedIP() {
-        return this.clientSocket.getInetAddress().getHostAddress();
+        return clientSocket.getInetAddress().getHostAddress();
     }
 
     public void stopConnection() {
         try {
             sendMessage("exit");
 
-            if (this.outstream != null)
-                this.outstream.close();
-            if (this.instream != null) {
-                this.instream.close();
-                this.clientSocket.close();
+            if (outstream != null)
+                outstream.close();
+            if (instream != null) {
+                instream.close();
+                clientSocket.close();
             }
-            this.setConnectionStatus(false);
+            setConnectionStatus(false);
         } catch (IOException e) {
             System.err.println("Unable to properly close client connection.");
         }

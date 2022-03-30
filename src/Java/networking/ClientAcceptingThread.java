@@ -14,7 +14,7 @@ class ClientAcceptingThread extends Thread {
     @Override
     public void run() {
         try {
-            this.serverSocket = new ServerSocket(Hub.PORT);
+            serverSocket = new ServerSocket(Hub.PORT);
         } catch (IOException e) {
             System.err.println("Unable to start ServerSocket on port " + Hub.PORT);
             e.printStackTrace();
@@ -22,15 +22,15 @@ class ClientAcceptingThread extends Thread {
 
         while(true) {
             try {
-                this.clientSocket = this.serverSocket.accept();
+                clientSocket = serverSocket.accept();
 
                 // Debug
-                System.out.println("New client connected: " + this.clientSocket);
+                System.out.println("New client connected: " + clientSocket);
 
-                this.serverThreads.add(new ServerThread(this.clientSocket));
-                this.serverThreads.getLast().start(); // Start the new server thread
+                serverThreads.add(new ServerThread(clientSocket));
+                serverThreads.getLast().start(); // Start the new server thread
 
-                this.newConnection(this.serverThreads.getLast().getConnectedIP());
+                newConnection(serverThreads.getLast().getConnectedIP());
             } catch (IOException e) {
                 System.err.println("Unable to accept incoming connection to ServerThread.");
                 e.printStackTrace();
@@ -39,7 +39,7 @@ class ClientAcceptingThread extends Thread {
     }
 
     public void removeServerThread(ServerThread t) {
-        this.serverThreads.remove(t);
+        serverThreads.remove(t);
     }
 
     public void newConnection(String ip) {
@@ -54,17 +54,17 @@ class ClientAcceptingThread extends Thread {
             clientHandler.sendMessage("NewConnection\n" + ip); // The newline splits the message into two lines for interpretation by the client
 
             // Create our own connection to the new address
-            this.clientThreads.add(new ClientThread(ip));
-            this.clientThreads.getLast().start(); // Start the new client thread
+            clientThreads.add(new ClientThread(ip));
+            clientThreads.getLast().start(); // Start the new client thread
         }
     }
 
     public void end() {
         try {
-            if (this.clientSocket != null)
-                this.clientSocket.close();
-            if (this.serverSocket != null)
-                this.serverSocket.close();
+            if (clientSocket != null)
+                clientSocket.close();
+            if (serverSocket != null)
+                serverSocket.close();
         } catch (IOException e) {
             System.err.println("Unable to properly close ClientAcceptingThread sockets.");
         }

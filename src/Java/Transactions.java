@@ -8,7 +8,7 @@ class Transactions {
     private Transaction[] transactions;
 
     Transactions() {
-        this.transactions = new Transaction[KootenayKoin.transactionsPerKoin];
+        transactions = new Transaction[KootenayKoin.transactionsPerKoin];
     }
 
     Transactions(Transaction[] transactions) {
@@ -22,7 +22,7 @@ class Transactions {
 
     public Transactions generateValidTransactions() {
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++) {
-            this.transactions[i] = Transaction.generateValidTransaction();
+            transactions[i] = Transaction.generateValidTransaction();
         }
 
         return this;
@@ -39,7 +39,7 @@ class Transactions {
     }
 
     public void setTransaction(int i, Transaction transaction) {
-        this.transactions[i] = transaction;
+        transactions[i] = transaction;
     }
 
     public void populateAccountBalances() {
@@ -52,8 +52,8 @@ class Transactions {
     public void validate() throws InvalidTransactionException {
         for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++) {
             try {
-                if (this.transactions[i] != null) {
-                    this.transactions[i].validate();
+                if (transactions[i] != null) {
+                    transactions[i].validate();
                 }
             } catch (InvalidTransactionException e) {
                 throw e;

@@ -26,7 +26,7 @@ public class AsymmetricCryptography {
     private Cipher cipher;
 
     public AsymmetricCryptography() throws NoSuchAlgorithmException, NoSuchPaddingException {
-        this.cipher = Cipher.getInstance("RSA");
+        cipher = Cipher.getInstance("RSA");
     }
 
     // https://docs.oracle.com/javase/8/docs/api/java/security/spec/PKCS8EncodedKeySpec.html
@@ -47,14 +47,14 @@ public class AsymmetricCryptography {
 
     public void encryptFile(byte[] input, File output, PrivateKey key)
             throws IOException, GeneralSecurityException {
-        this.cipher.init(Cipher.ENCRYPT_MODE, key);
-        writeToFile(output, this.cipher.doFinal(input));
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        writeToFile(output, cipher.doFinal(input));
     }
 
     public void decryptFile(byte[] input, File output, PublicKey key)
             throws IOException, GeneralSecurityException {
-        this.cipher.init(Cipher.DECRYPT_MODE, key);
-        writeToFile(output, this.cipher.doFinal(input));
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        writeToFile(output, cipher.doFinal(input));
     }
 
     private void writeToFile(File output, byte[] toWrite)
@@ -69,14 +69,14 @@ public class AsymmetricCryptography {
             throws NoSuchAlgorithmException, NoSuchPaddingException,
             UnsupportedEncodingException, IllegalBlockSizeException,
             BadPaddingException, InvalidKeyException {
-        this.cipher.init(Cipher.ENCRYPT_MODE, key);
+        cipher.init(Cipher.ENCRYPT_MODE, key);
         return Base64.encodeBase64String(cipher.doFinal(msg.getBytes("UTF-8")));
     }
 
     public String decryptText(String msg, PublicKey key)
             throws InvalidKeyException, UnsupportedEncodingException,
             IllegalBlockSizeException, BadPaddingException {
-        this.cipher.init(Cipher.DECRYPT_MODE, key);
+        cipher.init(Cipher.DECRYPT_MODE, key);
         return new String(cipher.doFinal(Base64.decodeBase64(msg)), "UTF-8");
     }
 

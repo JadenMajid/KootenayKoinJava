@@ -18,26 +18,24 @@ public class GenerateKeys {
     private PublicKey publicKey;
 
     public GenerateKeys(int keylength) throws NoSuchAlgorithmException, NoSuchProviderException {
-        this.keyGen = KeyPairGenerator.getInstance("RSA");
-        this.keyGen.initialize(keylength);
+        keyGen = KeyPairGenerator.getInstance("RSA");
+        keyGen.initialize(keylength);
     }
 
-    public GenerateKeys() {
-
-    }
+    public GenerateKeys() { }
 
     public void createKeys() {
-        this.pair = this.keyGen.generateKeyPair();
-        this.privateKey = pair.getPrivate();
-        this.publicKey = pair.getPublic();
+        pair = keyGen.generateKeyPair();
+        privateKey = pair.getPrivate();
+        publicKey = pair.getPublic();
     }
 
     public PrivateKey getPrivateKey() {
-        return this.privateKey;
+        return privateKey;
     }
 
     public PublicKey getPublicKey() {
-        return this.publicKey;
+        return publicKey;
     }
 
     public void writeToFile(String path, byte[] key) throws IOException {

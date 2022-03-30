@@ -44,7 +44,7 @@ public class Account {
 
         this.address = address;
         try {
-            this.keyGenerator = new GenerateKeys(4096);
+            keyGenerator = new GenerateKeys(4096);
         } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
             e.printStackTrace();
         }
@@ -52,11 +52,11 @@ public class Account {
         assert keyGenerator != null;
         keyGenerator.createKeys();
 
-        this.privateKey = keyGenerator.getPrivateKey();
-        this.publicKey = keyGenerator.getPublicKey();
+        privateKey = keyGenerator.getPrivateKey();
+        publicKey = keyGenerator.getPublicKey();
 
         try {
-            this.signatureGen = new AsymmetricCryptography();
+            signatureGen = new AsymmetricCryptography();
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             e.printStackTrace();
         }
@@ -74,7 +74,7 @@ public class Account {
         System.out.println(input.length());
         try {
             if (decoder != null) {
-                temp = decoder.encryptText(input, this.privateKey);
+                temp = decoder.encryptText(input, privateKey);
             }
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | UnsupportedEncodingException
                 | IllegalBlockSizeException | BadPaddingException e) {
@@ -93,7 +93,7 @@ public class Account {
     }
 
     public int getAddress() {
-        return this.address;
+        return address;
     }
 
     public String getSignature() {
@@ -118,9 +118,9 @@ public class Account {
         for (KootenayKoin koin : KootenayKoinBlockchain.getBlockchain()) {
             Transactions transactions = koin.getTransactions();
             for (int i = 0; i < KootenayKoin.transactionsPerKoin; i++) {
-                if (transactions.getTransaction(i).getAddressFrom() == this.address) {
+                if (transactions.getTransaction(i).getAddressFrom() == address) {
                     balance -= transactions.getTransaction(i).getAmount();
-                } else if (transactions.getTransaction(i).getAddressTo() == this.address) {
+                } else if (transactions.getTransaction(i).getAddressTo() == address) {
                     balance += transactions.getTransaction(i).getAmount();
                 }
             }
@@ -129,6 +129,6 @@ public class Account {
     }
 
     public PublicKey getPublicKey() {
-        return this.publicKey;
+        return publicKey;
     }
 }

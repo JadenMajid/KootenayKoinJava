@@ -6,18 +6,17 @@ Miners are an extension of the Account class that can mine for KootenayKoins, an
 for successfully mining blocks
  */
 public class Miner extends Account {
-
     public static int DIFFICULTY = 3;
     private KootenayKoin coin; // Current coin miner is mining
     private LinkedList<Transaction> transactionPool;
 
     public Miner() {
-        this.coin = null;
+        coin = null;
     }
 
     public Miner(int address) {
         super(address);
-        this.coin = null;
+        coin = null;
     }
 
     public KootenayKoin getBlock(int i) {
@@ -30,12 +29,9 @@ public class Miner extends Account {
         }
     }
 
-
-
     public void makeKootenayKoin() { // Set method for Miner.coin
-        this.coin = new KootenayKoin(blockchain.getBlock(KootenayKoinBlockchain.getSize()).hash(),
-                this.coin.getTransactions().generateValidTransactions(),
-                0, DIFFICULTY);
+        coin = new KootenayKoin(blockchain.getBlock(KootenayKoinBlockchain.getSize()).hash(),
+                coin.getTransactions().generateValidTransactions(), 0, DIFFICULTY);
     }
 
     public void setKootenayKoin(KootenayKoin coin) {
@@ -43,7 +39,7 @@ public class Miner extends Account {
     }
 
     public KootenayKoin getKootenayKoin() {
-        return this.coin;
+        return coin;
     }
 
     public void mine(KootenayKoin noNonceKoin)
@@ -68,7 +64,7 @@ public class Miner extends Account {
 
         // No working nonce found indicating something wrong happened, throw an
         // exception
-        throw new NoNonceFoundException(this.coin);
+        throw new NoNonceFoundException(coin);
     }
 
     public KootenayKoin createGenesisKoin(String genesisString, Transactions transactions) {

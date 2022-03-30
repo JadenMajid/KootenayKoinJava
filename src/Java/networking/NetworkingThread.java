@@ -17,19 +17,19 @@ public class NetworkingThread extends Thread {
 
     // For ClientThreads
     public NetworkingThread() {
-        this.connected = false;
+        connected = false;
     }
 
     // For ServerThreads
     public NetworkingThread(Socket clientSocket) {
-        this.socket = clientSocket;
-        this.connected = false;
+        socket = clientSocket;
+        connected = false;
 
 		try {
-			this.instream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-			this.outstream = new PrintWriter(this.socket.getOutputStream(), true);
+			instream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			outstream = new PrintWriter(socket.getOutputStream(), true);
 
-			this.connected = true;
+			connected = true;
 		} catch (IOException e) {
 			System.err.println("Unable to establish client IO streams.");
 			e.printStackTrace();
@@ -37,8 +37,8 @@ public class NetworkingThread extends Thread {
     }
 
 	public void setIOStreams() throws IOException {
-		this.instream = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
-		this.outstream = new PrintWriter(this.socket.getOutputStream(), true);
+		instream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		outstream = new PrintWriter(socket.getOutputStream(), true);
 	}
 
 	public void setSocket(Socket socket) throws IOException {
@@ -46,29 +46,29 @@ public class NetworkingThread extends Thread {
 	}
 	
 	public boolean connectionStatus() {
-        return this.connected;
+        return connected;
     }
 
 	public void setConnectionStatus(boolean state) {
-		this.connected = state;
+		connected = state;
 	}
 
     public void sendMessage(String msg) {
-        this.outstream.println(msg);
-        this.outstream.flush();
+        outstream.println(msg);
+        outstream.flush();
     }
 
     public void stopConnection() {
         try {
             sendMessage("exit");
             
-            if (this.outstream != null)
-                this.outstream.close();
-            if (this.instream != null) {
-                this.instream.close();
-                this.socket.close();
+            if (outstream != null)
+                outstream.close();
+            if (instream != null) {
+                instream.close();
+                socket.close();
             }
-            this.connected = false;
+            connected = false;
         } catch (IOException e) {
             System.err.println("Unable to properly close client connection.");
         }

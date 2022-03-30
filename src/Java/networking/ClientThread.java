@@ -15,10 +15,10 @@ public class ClientThread extends NetworkingThread {
     @Override
     public void run() {
         try {
-            this.setSocket(new Socket(this.ip, Hub.PORT));
+            setSocket(new Socket(ip, Hub.PORT));
         } catch (IOException e) {
             System.err.println("Unable to establish socket connection."
-                    + "(Has the IP for this thread been set?) Thread IP: " + this.ip);
+                    + "(Has the IP for this thread been set?) Thread IP: " + ip);
             e.printStackTrace();
         }
 
