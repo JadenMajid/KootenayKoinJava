@@ -1,17 +1,19 @@
 package Java.networking;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.Socket;
 
-public class ClientThread extends NetworkingThread {
-    private BufferedReader instream;
+/**
+ * Objects of this class are created to handle the client side of the connections in our network.
+ */
+class ClientThread extends NetworkingThread {
     private String ip;
 
-    public ClientThread(String ip) {
+    protected ClientThread(String ip) {
         this.ip = ip;
     }
 
+    // Main thread loop. Call start() submethod to start thread instead of run().
     @Override
     public void run() {
         try {
@@ -36,6 +38,7 @@ public class ClientThread extends NetworkingThread {
                         break;
                     default:
                         System.err.println("Unprocessed message from client: " + receivedLine);
+                        break;
                 }
             }
         } catch (IOException e) {

@@ -5,12 +5,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
-class ClientAcceptingThread extends Thread {
+/**
+ * This is the main class for the networking system. Server and client connections are created and managed from this class. Pending rename to MainServer.
+ */
+public class ClientAcceptingThread extends Thread {
     private ServerSocket serverSocket;
     private Socket clientSocket;
     private LinkedList<ServerThread> serverThreads;
     private LinkedList<ClientThread> clientThreads;
+    private boolean shouldRun;
 
+    public ClientAcceptingThread() {
+        shouldRun = true;
+    }
+
+    // Main thread loop. Call start() submethod to start thread instead of run().
     @Override
     public void run() {
         try {
@@ -20,7 +29,7 @@ class ClientAcceptingThread extends Thread {
             e.printStackTrace();
         }
 
-        while(true) {
+        while(shouldRun) {
             try {
                 clientSocket = serverSocket.accept();
 
@@ -38,11 +47,13 @@ class ClientAcceptingThread extends Thread {
         }
     }
 
-    public void removeServerThread(ServerThread t) {
+    // Remove a server thread from the register.
+    protected void removeServerThread(ServerThread t) {
         serverThreads.remove(t);
     }
 
-    public void newConnection(String ip) {
+    // Begin a new connection and propagate this connection through the network.
+    protected void newConnection(String ip) {
         if (ip.equals(Hub.localhostIP))
             return; // ip is our own ip, no need to broadcast
 
@@ -59,7 +70,18 @@ class ClientAcceptingThread extends Thread {
         }
     }
 
+    // Call this method to shut down all network threads (including this one).
     public void end() {
+        // Close all server threads
+        for (ServerThread clientHandler : Hub.mainServer.serverThreads)
+            clientHandler.stopConnection();
+        // Close all client threads
+        for (ClientThread client : Hub.mainServer.clientThreads)
+            client.stopConnection();
+
+        shouldRun = false; // Stop main loop
+
+        // Close sockets
         try {
             if (clientSocket != null)
                 clientSocket.close();

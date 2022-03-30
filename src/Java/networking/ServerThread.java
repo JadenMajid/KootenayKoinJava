@@ -1,19 +1,18 @@
 package Java.networking;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ServerThread extends NetworkingThread {
-    private Socket clientSocket;
-    private BufferedReader instream;
-    private PrintWriter outstream;
+/**
+ * Objects of this class are created to handle the server side of the connections in our network.
+ */
+class ServerThread extends NetworkingThread {
 
-    public ServerThread(Socket socket) {
+    protected ServerThread(Socket socket) {
         super(socket);
     }
 
+    // Main thread loop. Call start() submethod to start thread instead of run().
     @Override
     public void run() {
         String receivedLine;
@@ -24,11 +23,9 @@ public class ServerThread extends NetworkingThread {
                         stopConnection();
                         Hub.mainServer.removeServerThread(this);
                         return; // Stop running
-                    case Hub.NETNewConnection:
-                        Hub.mainServer.newConnection(instream.readLine());
-                        break;
                     default:
                         System.err.println("Unprocessed message from client: " + receivedLine);
+                        break;
                 }
             }
         } catch(IOException e) {
@@ -39,23 +36,8 @@ public class ServerThread extends NetworkingThread {
         }
     }
 
-    public String getConnectedIP() {
-        return clientSocket.getInetAddress().getHostAddress();
-    }
-
-    public void stopConnection() {
-        try {
-            sendMessage("exit");
-
-            if (outstream != null)
-                outstream.close();
-            if (instream != null) {
-                instream.close();
-                clientSocket.close();
-            }
-            setConnectionStatus(false);
-        } catch (IOException e) {
-            System.err.println("Unable to properly close client connection.");
-        }
+    // Returns the IP address this object is connected to.
+    protected String getConnectedIP() {
+        return socket.getInetAddress().getHostAddress();
     }
 }

@@ -9,26 +9,24 @@ import java.net.Socket;
 /**
  * Abstraction of both network communication handling threads
  */
-public class NetworkingThread extends Thread {
-	private Socket socket;
-    private PrintWriter outstream;
-    private BufferedReader instream;
+class NetworkingThread extends Thread {
+	Socket socket;
+    PrintWriter outstream;
+    BufferedReader instream;
     private boolean connected;
 
     // For ClientThreads
-    public NetworkingThread() {
+    protected NetworkingThread() {
         connected = false;
     }
 
     // For ServerThreads
-    public NetworkingThread(Socket clientSocket) {
-        socket = clientSocket;
+    protected NetworkingThread(Socket socket) {
+        this.socket = socket;
         connected = false;
 
 		try {
-			instream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			outstream = new PrintWriter(socket.getOutputStream(), true);
-
+			setIOStreams();
 			connected = true;
 		} catch (IOException e) {
 			System.err.println("Unable to establish client IO streams.");
@@ -36,31 +34,37 @@ public class NetworkingThread extends Thread {
 		}
     }
 
-	public void setIOStreams() throws IOException {
+    // Set the input and output streams for the thread.
+	protected void setIOStreams() throws IOException {
 		instream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		outstream = new PrintWriter(socket.getOutputStream(), true);
 	}
 
-	public void setSocket(Socket socket) throws IOException {
+    // Set the socket for the thread
+	protected void setSocket(Socket socket) throws IOException {
 		this.socket = socket;
 	}
 	
-	public boolean connectionStatus() {
+    // Retrieve the connection status of the thread
+	protected boolean connectionStatus() {
         return connected;
     }
 
-	public void setConnectionStatus(boolean state) {
+    // Set the connection status of the thread
+	protected void setConnectionStatus(boolean state) {
 		connected = state;
 	}
 
-    public void sendMessage(String msg) {
+    // Send a message via the network to the connected party
+    protected void sendMessage(String msg) {
         outstream.println(msg);
         outstream.flush();
     }
 
-    public void stopConnection() {
+    // Close this thread's connection
+    protected void stopConnection() {
         try {
-            sendMessage("exit");
+            sendMessage(Hub.NETExit);
             
             if (outstream != null)
                 outstream.close();
@@ -70,7 +74,8 @@ public class NetworkingThread extends Thread {
             }
             connected = false;
         } catch (IOException e) {
-            System.err.println("Unable to properly close client connection.");
+            System.err.println("Unable to properly close connection.");
+            e.printStackTrace();
         }
     }
 }

@@ -11,6 +11,10 @@ import java.net.UnknownHostException;
  *  update all references to this class and delete this file
  */
 
+/**
+ * Pending removal, serves no real purpose.
+ */
+@Deprecated(forRemoval = true)
 public class Hub {
     static final int PORT = 49666;
     static String localhostIP;
